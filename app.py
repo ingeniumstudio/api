@@ -5,6 +5,8 @@ from litestar import Response
 from litestar import get
 from litestar.datastructures import Headers
 
+
+from functions import get_dhammapada
 from functions import text_to_image
 
 #  class InMemoryFileResponse(Response[bytes]):
@@ -34,6 +36,11 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
+@get("/display-dhammapada")
+async def display_dhammapada() -> str:
+    dhammapada = get_dhammapada()
+    return dhammapada
+
 @get("/img")
 async def text_to_img(text: str) -> Response:
 
@@ -42,7 +49,7 @@ async def text_to_img(text: str) -> Response:
     return Response(
         content=png_bytes,
         media_type="image/png",
-        headers=Headers({"Content-Disposition": "inline; filename=example.png"})
+        headers=Headers({"Content-Disposition": "inline; filename=image.png"})
     )
 
-app = Litestar(route_handlers=[hello_world, text_to_img])
+app = Litestar(route_handlers=[hello_world, display_dhammapada, text_to_img])
