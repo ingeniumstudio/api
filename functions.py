@@ -15,11 +15,14 @@ def get_dhammapada():
     random_choice = random.choice(list(keys))
 
     verse_numbers, verse = dhammapada_json[random_choice]
-
     verses = ", ".join([str(verse_number) for verse_number in verse_numbers])
-    signature = f"— Dhammapada {verses}"
+    signature = f"- Dhammapada {verses}"
+    #  signature = f"— Dhammapada {verses}"
 
-    return f"{verse}\n\n{signature}"
+    text_width = max([len(line) for line in verse.splitlines()])
+    offset_len = text_width - len(signature)
+    offset = ' ' * offset_len
+    return f"{verse}\n\n{offset}{signature}"
     #  print(verse, signature, sep="\n\n")
 
 
@@ -27,10 +30,12 @@ def text_to_image(text: str):
 
     png_bytes = bytes()
     text = bytes(text, "utf-8").decode("unicode_escape")
+    #  text = text.replace('\\n', '\n')
 
     with Drawing() as draw:
         draw.font =  "./font.ttf"
-        draw.font_size = 18
+        #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
+        draw.font_size = 16
         draw.fill_color = Color("white")
 
         # Create a temporary image to measure the text
@@ -49,6 +54,7 @@ def text_to_image(text: str):
 
             draw(img)
             img.trim()
+            img.sharpen(radius=1, sigma=0.5)
 
             #  img.format = 'png'
             png_bytes = img.make_blob(format='png')
