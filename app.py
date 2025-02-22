@@ -1,9 +1,15 @@
+from pathlib import Path
+from re import template
 from typing import IO
 
 from litestar import Litestar
 from litestar import Response
 from litestar import get
 from litestar.datastructures import Headers
+
+from litestar.contrib.jinja import JinjaTemplateEngine
+from litestar.response import Template
+from litestar.template.config import TemplateConfig
 
 
 from functions import get_dhammapada
@@ -41,9 +47,9 @@ async def display_dhammapada() -> str:
     dhammapada = get_dhammapada()
     return dhammapada
 
+
 @get("/img")
 async def text_to_img(text: str) -> Response:
-
     png_bytes = text_to_image(text=text)
 
     return Response(
@@ -52,4 +58,15 @@ async def text_to_img(text: str) -> Response:
         headers=Headers({"Content-Disposition": "inline; filename=image.png"})
     )
 
-app = Litestar(route_handlers=[hello_world, display_dhammapada, text_to_img])
+
+route_handlers = [
+        hello_world,
+        display_dhammapada,
+        text_to_img
+        ]
+
+template_config = TemplateConfig(directory=Path(__file__) / "templates",
+                                 engine=JinjaTemplateEngine)
+
+app = Litestar(route_handlers=route_handlers,
+               template_config=template_config)
