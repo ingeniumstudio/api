@@ -43,8 +43,9 @@ async def hello_world() -> dict[str, str]:
 
 
 @get("/display-dhammapada")
-async def display_dhammapada(format: str | None = None) -> str | Response:
-    dhammapada = get_dhammapada()
+async def display_dhammapada(number: int | None = None,
+                             format: str | None = None) -> str | Response:
+    dhammapada = get_dhammapada(number=number)
 
     if format == "png":
         png_bytes = text_to_image(text=dhammapada)
