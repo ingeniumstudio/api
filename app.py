@@ -3,6 +3,7 @@ from re import template
 from typing import IO
 
 from litestar import Litestar
+from litestar import MediaType
 from litestar import Response
 from litestar import get
 from litestar.datastructures import Headers
@@ -11,30 +12,17 @@ from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.response import Template
 from litestar.template.config import TemplateConfig
 
+from litestar.openapi.config import OpenAPIConfig
+from litestar.openapi.plugins import RapidocRenderPlugin
+from litestar.openapi.plugins import RedocRenderPlugin
+from litestar.openapi.plugins import ScalarRenderPlugin
+from litestar.openapi.plugins import StoplightRenderPlugin
+from litestar.openapi.plugins import SwaggerRenderPlugin
+from litestar.openapi.plugins import YamlRenderPlugin
 
 from functions import get_dhammapada
 from functions import text_to_image
 
-#  class InMemoryFileResponse(Response[bytes]):
-#      def __init__(self, buf: IO, name: str):
-#          super().__init__(buf.getvalue(), headers={"content-disposition": f"attachment;filename={name}")
-
-# https://caddyserver.com/docs/quick-starts/reverse-proxy
-
-# https://docs.litestar.dev/latest/
-
-# sudo caddy reverse-proxy --from sub.kassius.org --to :8000
-# $ litestar run
-
-# https://docs.litestar.dev/2/topics/deployment/supervisor.html#alternatives
-
-# https://docs.litestar.dev/2/usage/templating.html#template-responses
-
-# https://github.com/Tobi-De/litestar-browser-reload
-
-# https://stackoverflow.com/questions/55873174/how-do-i-return-an-image-in-fastapi
-
-# https://github.com/orgs/litestar-org/discussions/1868
 
 @get("/")
 async def hello_world() -> dict[str, str]:
@@ -42,7 +30,7 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
-@get("/display-dhammapada")
+@get("/display-dhammapada", media_type=MediaType.TEXT)
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None) -> str | Response:
     dhammapada = get_dhammapada(number=number)
@@ -80,4 +68,17 @@ template_config = TemplateConfig(directory=Path(__file__) / "templates",
                                  engine=JinjaTemplateEngine)
 
 app = Litestar(route_handlers=route_handlers,
-               template_config=template_config)
+               template_config=template_config,
+               openapi_config=OpenAPIConfig(
+                   title='Yoke API',
+                   version='0.0.1',
+                   render_plugins=[
+                       RapidocRenderPlugin(),
+                       RedocRenderPlugin(),
+                       ScalarRenderPlugin(),
+                       StoplightRenderPlugin(),
+                       SwaggerRenderPlugin(),
+                       YamlRenderPlugin()
+                       ]
+                   )
+               )
