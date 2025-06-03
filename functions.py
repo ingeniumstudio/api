@@ -1,9 +1,13 @@
 import json
+import os
 import random
+import subprocess
 
 from wand.image import Image
 from wand.drawing import Drawing
 from wand.color import Color
+
+import secret_config
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
@@ -72,3 +76,17 @@ def text_to_image(text: str):
     return png_bytes
 
 
+def ntfy_cli(message, title):
+
+    ntfy_server_hostname = secret_config.NTFY_SERVER_HOSTNAME
+    ntfy_topic = secret_config.NTFY_TOPIC
+    os.environ["NTFY_URL_HTTPS"] = f"https://{ntfy_server_hostname}/{ntfy_topic}"
+    os.environ["NTFY_AUTH_TOKEN"] = secret_config.NTFY_TOKEN
+    args = ["/home/u07/.venv/bin/python",
+            "/home/u07/bin/ntfy-cli.py",
+            "--message",
+            message,
+            "--title",
+            title]
+    #  args = ["ntfy-cli.py", "--message", data]
+    subprocess.run(args)

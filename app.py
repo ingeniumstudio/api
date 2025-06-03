@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 from pathlib import Path
 from re import template
 from typing import IO
@@ -6,6 +9,7 @@ from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
 from litestar import get
+from litestar import post
 from litestar.datastructures import Headers
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -22,6 +26,7 @@ from litestar.openapi.plugins import YamlRenderPlugin
 
 from functions import get_dhammapada
 from functions import text_to_image
+from functions import ntfy_cli
 
 
 @get("/")
@@ -57,11 +62,19 @@ async def text_to_img(text: str) -> Response:
         headers=Headers({"Content-Disposition": "inline; filename=image.png"})
     )
 
+@post("/webhook", media_type=MediaType.TEXT)
+async def github_webhook_notify(data: dict) -> str:
+#  async def github_webhook_notify(data) -> str:
+    #  ntfy_cli("txt", "tits")
+    ntfy_cli(data, "tits")
+
+    return "okiz"
 
 route_handlers = [
         hello_world,
         display_dhammapada,
-        text_to_img
+        text_to_img,
+        github_webhook_notify,
         ]
 
 template_config = TemplateConfig(directory=Path(__file__) / "templates",
