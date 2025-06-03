@@ -76,7 +76,7 @@ def text_to_image(text: str):
     return png_bytes
 
 
-def ntfy_cli(message, title):
+def ntfy_cli(message, title, priority):
 
     ntfy_server_hostname = secret_config.NTFY_SERVER_HOSTNAME
     ntfy_topic = secret_config.NTFY_TOPIC
@@ -87,6 +87,9 @@ def ntfy_cli(message, title):
             "--message",
             message,
             "--title",
-            title]
+            title,
+            "--priority",
+            priority,
+            ]
     #  args = ["ntfy-cli.py", "--message", data]
     subprocess.run(args)

@@ -62,13 +62,14 @@ async def text_to_img(text: str) -> Response:
         headers=Headers({"Content-Disposition": "inline; filename=image.png"})
     )
 
-@post("/webhook", media_type=MediaType.TEXT)
-async def github_webhook_notify(data: dict) -> str:
+@post("/webhook")
+async def github_webhook_notify(data: dict[str, str]) -> str:
 #  async def github_webhook_notify(data) -> str:
     #  ntfy_cli("txt", "tits")
-    ntfy_cli(data, "tits")
+    ntfy_cli(str(data), "tits", priority="high")
 
-    return "okiz"
+    #  return "okiz"
+    return  str(data)
 
 route_handlers = [
         hello_world,
