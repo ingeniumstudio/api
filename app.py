@@ -63,13 +63,18 @@ async def text_to_img(text: str) -> Response:
     )
 
 @post("/webhook")
-async def github_webhook_notify(data: dict[str, str]) -> str:
+async def github_webhook_notify(data: dict) -> dict:
+#  async def github_webhook_notify(data: dict) -> str:
+#  async def github_webhook_notify(data: str) -> str:
+#  async def github_webhook_notify(data: dict) -> str:
 #  async def github_webhook_notify(data) -> str:
     #  ntfy_cli("txt", "tits")
     ntfy_cli(str(data), "tits", priority="high")
+    #  ntfy_cli(data, "tits", priority="high")
 
     #  return "okiz"
-    return  str(data)
+    #  return  str(data)
+    return data
 
 route_handlers = [
         hello_world,
