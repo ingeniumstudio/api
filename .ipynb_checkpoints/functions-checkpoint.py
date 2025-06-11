@@ -1,5 +1,4 @@
 import json
-from ntpath import isfile
 import os
 import random
 import subprocess
@@ -8,8 +7,7 @@ from wand.image import Image
 from wand.drawing import Drawing
 from wand.color import Color
 
-if os.path.isfile("secret_config.py"):
-    import secret_config
+import secret_config
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
