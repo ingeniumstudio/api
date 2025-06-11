@@ -37,11 +37,15 @@ async def hello_world() -> dict[str, str]:
 
 @get("/display-dhammapada", media_type=MediaType.TEXT)
 async def display_dhammapada(number: int | None = None,
-                             format: str | None = None) -> str | Response:
+                             format: str | None = None,
+                             image_padding: int = 10) -> str | Response:
+                             #  image_padding: int | None = 10) -> str | Response:
+
     dhammapada = get_dhammapada(number=number)
 
     if format == "png":
-        png_bytes = text_to_image(text=dhammapada)
+        png_bytes = text_to_image(text=dhammapada,
+                                  padding=image_padding)
 
         return Response(
             content=png_bytes,
