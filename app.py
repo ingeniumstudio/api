@@ -57,8 +57,9 @@ async def display_dhammapada(number: int | None = None,
 
 
 @get("/img")
-async def text_to_img(text: str) -> Response:
-    png_bytes = text_to_image(text=text)
+async def text_to_img(text: str, padding: int = 0) -> Response:
+    png_bytes = text_to_image(text=text,
+                              padding=padding)
 
     return Response(
         content=png_bytes,
