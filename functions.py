@@ -41,7 +41,11 @@ def get_dhammapada(number: int | None = None):
     #  print(verse, signature, sep="\n\n")
 
 
-def text_to_image(text: str, padding: int = 0):
+def text_to_image(text: str,
+                  padding: int = 0,
+                  foreground_color: str = "white",
+                  background_color: str= "black",
+                  font_size: int = 16):
 
     png_bytes = bytes()
     text = bytes(text, "utf-8").decode("unicode_escape")
@@ -50,8 +54,10 @@ def text_to_image(text: str, padding: int = 0):
     with Drawing() as draw:
         draw.font =  "./font.ttf"
         #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
-        draw.font_size = 16
-        draw.fill_color = Color("white")
+        #  draw.font_size = 16
+        draw.font_size = font_size
+        #  draw.fill_color = Color("white")
+        draw.fill_color = Color(foreground_color)
 
         # Create a temporary image to measure the text
         with Image(width=1, height=1) as temp_img:
@@ -63,7 +69,10 @@ def text_to_image(text: str, padding: int = 0):
         img_width = text_width + padding * 2
         img_height = text_height + padding * 2
 
-        with Image(width=img_width, height=img_height, background=Color('black')) as img:
+        with Image(width=img_width,
+                   height=img_height,
+                   background=Color(background_color)) as img:
+                   #  background=Color('black')) as img:
 
             draw.text(padding, int(img_height / 2 - text_height / 2 + metrics.ascender), text)
 

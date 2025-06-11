@@ -38,33 +38,51 @@ async def hello_world() -> dict[str, str]:
 @get("/display-dhammapada", media_type=MediaType.TEXT)
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
-                             image_padding: int = 10) -> str | Response:
-                             #  image_padding: int | None = 10) -> str | Response:
+                             image_padding: int = 10,
+                             foreground_color: str = "white",
+                             background_color: str = "black",
+                             font_size: int = 16
+                             ) -> str | Response:
 
     dhammapada = get_dhammapada(number=number)
 
     if format == "png":
         png_bytes = text_to_image(text=dhammapada,
-                                  padding=image_padding)
+                                  padding=image_padding,
+                                  foreground_color=foreground_color,
+                                  background_color=background_color,
+                                  font_size=font_size
+                                  )
 
         return Response(
             content=png_bytes,
             media_type="image/png",
-            headers=Headers({"Content-Disposition": "inline; filename=image.png"})
+            headers=Headers({"Content-Disposition":
+                             "inline; filename=image.png"})
         )
 
     return dhammapada
 
 
 @get("/img")
-async def text_to_img(text: str, padding: int = 0) -> Response:
+async def text_to_img(text: str,
+                      padding: int = 0,
+                      foreground_color: str = "white",
+                      background_color: str = "black",
+                      font_size: int = 16
+                      ) -> Response:
     png_bytes = text_to_image(text=text,
-                              padding=padding)
+                              padding=padding,
+                              foreground_color=foreground_color,
+                              background_color=background_color,
+                              font_size=font_size
+                              )
 
     return Response(
         content=png_bytes,
         media_type="image/png",
-        headers=Headers({"Content-Disposition": "inline; filename=image.png"})
+        headers=Headers({"Content-Disposition":
+                         "inline; filename=image.png"})
     )
 
 @post("/webhook")
