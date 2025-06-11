@@ -1,5 +1,4 @@
 import json
-from ntpath import isfile
 import os
 import random
 import subprocess
@@ -42,7 +41,7 @@ def get_dhammapada(number: int | None = None):
     #  print(verse, signature, sep="\n\n")
 
 
-def text_to_image(text: str):
+def text_to_image(text: str, padding: int = 0):
 
     png_bytes = bytes()
     text = bytes(text, "utf-8").decode("unicode_escape")
@@ -60,7 +59,7 @@ def text_to_image(text: str):
             text_width = int(metrics.text_width)
             text_height = int(metrics.text_height)
 
-        padding = 10
+        #  padding = 10
         img_width = text_width + padding * 2
         img_height = text_height + padding * 2
 
@@ -69,7 +68,8 @@ def text_to_image(text: str):
             draw.text(padding, int(img_height / 2 - text_height / 2 + metrics.ascender), text)
 
             draw(img)
-            img.trim()
+            if padding == 0:
+                img.trim()
             img.sharpen(radius=1, sigma=0.5)
 
             #  img.format = 'png'

@@ -7,7 +7,8 @@ from wand.image import Image
 from wand.drawing import Drawing
 from wand.color import Color
 
-import secret_config
+if os.path.isfile("secret_config.py"):
+    import secret_config
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
@@ -40,7 +41,7 @@ def get_dhammapada(number: int | None = None):
     #  print(verse, signature, sep="\n\n")
 
 
-def text_to_image(text: str):
+def text_to_image(text: str, padding: int = 0):
 
     png_bytes = bytes()
     text = bytes(text, "utf-8").decode("unicode_escape")
