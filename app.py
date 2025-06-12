@@ -64,7 +64,7 @@ async def display_dhammapada(number: int | None = None,
     return dhammapada
 
 
-@get("/img")
+@get("/text-to-image")
 async def text_to_img(text: str,
                       padding: int = 0,
                       foreground_color: str = "white",
@@ -87,16 +87,8 @@ async def text_to_img(text: str,
 
 @post("/webhook")
 async def github_webhook_notify(data: dict) -> dict:
-#  async def github_webhook_notify(data: dict) -> str:
-#  async def github_webhook_notify(data: str) -> str:
-#  async def github_webhook_notify(data: dict) -> str:
-#  async def github_webhook_notify(data) -> str:
-    #  ntfy_cli("txt", "tits")
     ntfy_cli(str(data), "tits", priority="high")
-    #  ntfy_cli(data, "tits", priority="high")
 
-    #  return "okiz"
-    #  return  str(data)
     return data
 
 route_handlers = [
