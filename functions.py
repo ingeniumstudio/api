@@ -134,7 +134,9 @@ def box(text):
                 + vertical_char)
 
 
-    line_list = sys.stdin.readlines()
+    #  line_list = sys.stdin.readlines()
+    #  line_list = text.readlines()
+    line_list = text.split("\n")
     lines = [line.expandtabs().strip('\n') for line in line_list]
 
     biggest_line_length = max(map(len, lines))

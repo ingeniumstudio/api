@@ -27,7 +27,7 @@ from litestar.openapi.plugins import YamlRenderPlugin
 from functions import get_dhammapada
 from functions import text_to_image
 from functions import ntfy_cli
-from functions import box_function
+from functions import box as box_function
 
 @get("/")
 async def hello_world() -> dict[str, str]:
