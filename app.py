@@ -27,7 +27,7 @@ from litestar.openapi.plugins import YamlRenderPlugin
 from functions import get_dhammapada
 from functions import text_to_image
 from functions import ntfy_cli
-
+from functions import box_function
 
 @get("/")
 async def hello_world() -> dict[str, str]:
@@ -69,8 +69,12 @@ async def text_to_img(text: str,
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
-                      font_size: int = 16
+                      font_size: int = 16,
+                      box: bool = True
                       ) -> Response:
+    if box:
+        text = box_function(text=text)
+
     png_bytes = text_to_image(text=text,
                               padding=padding,
                               foreground_color=foreground_color,
