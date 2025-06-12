@@ -53,7 +53,8 @@ def text_to_image(text: str,
     #  text = text.replace('\\n', '\n')
 
     with Drawing() as draw:
-        draw.font =  "./font.ttf"
+        #  draw.font =  "./font.ttf"
+        draw.font = "./RobotoMonoNerdFontMono-Regular.ttf"
         #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
         #  draw.font_size = 16
         draw.font_size = font_size
