@@ -92,14 +92,6 @@ def text_to_image(text: str,
 
 def ntfy_client(message, title, priority):
 
-    #  ntfy_server_hostname = secret_config.NTFY_SERVER_HOSTNAME
-    #  ntfy_topic = secret_config.NTFY_TOPIC
-    #  os.environ["NTFY_TOPIC"] = secret_config.NTFY_TOPIC
-    #  os.environ["NTFY_URL_HTTPS"] = f"https://{ntfy_server_hostname}/{ntfy_topic}"
-    #  #  os.environ["NTFY_AUTH_TOKEN"] = secret_config.NTFY_TOKEN
-    #  os.environ["NTFY_TOKEN"] = secret_config.NTFY_TOKEN
-    #  args = ["/home/u07/.venv/bin/python",
-    #          "/home/u07/bin/ntfy-cli.py",
     args = ["/home/u07/.venv/bin/ntfy-client",
             "pub",
             "--server-hostname",
@@ -181,8 +173,8 @@ def box(text):
     return box
 
 def cowsay(text: str):
-    command_args = ["cowsay", "-n"]
-    cowsay_process = subprocess.run(args=command_args,
+    command_args = ["/usr/games/cowsay", "-n"]
+    cowsay_process = subprocess.run(command_args,
                                     input=text,
                                     capture_output=True,
                                     text=True)
@@ -190,8 +182,8 @@ def cowsay(text: str):
     return cowsay_process.stdout
 
 def fortune(text: str):
-    command_args = ["fortune"]
-    fortune_process = subprocess.run(args=command_args,
+    command_args = ["/usr/games/fortune"]
+    fortune_process = subprocess.run(command_args,
                                      input=text,
                                      capture_output=True,
                                      text=True)

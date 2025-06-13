@@ -31,6 +31,9 @@ from functions import box as box_function
 from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
 
+#  DEBUG = True
+DEBUG = False
+
 @get("/")
 async def hello_world() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
@@ -73,7 +76,7 @@ async def display_dhammapada(number: int | None = None,
 
 
 @get("/text-to-image")
-async def text_to_img(text: str,
+async def text_to_img(text: str | None = None,
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
@@ -83,7 +86,7 @@ async def text_to_img(text: str,
                       fortune: bool = False
                       ) -> Response:
 
-    if fortune:
+    if fortune or not text:
         text = fortune_function(text=text)
 
     if cowsay:
@@ -137,5 +140,6 @@ app = Litestar(route_handlers=route_handlers,
                        SwaggerRenderPlugin(),
                        YamlRenderPlugin()
                        ]
-                   )
+                   ),
+               pdb_on_exception=DEBUG
                )
