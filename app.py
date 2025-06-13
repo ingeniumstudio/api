@@ -38,7 +38,7 @@ async def hello_world() -> dict[str, str]:
 @get("/display-dhammapada", media_type=MediaType.TEXT)
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
-                             padding: int = 10,
+                             padding: int = 22,
                              foreground_color: str = "white",
                              background_color: str = "black",
                              font_size: int = 16,
