@@ -181,10 +181,19 @@ def box(text):
     return box
 
 def cowsay(text: str):
-    command_args =["cowsay", "-n"]
+    command_args = ["cowsay", "-n"]
     cowsay_process = subprocess.run(args=command_args,
                                     input=text,
                                     capture_output=True,
                                     text=True)
 
     return cowsay_process.stdout
+
+def fortune(text: str):
+    command_args = ["fortune"]
+    fortune_process = subprocess.run(args=command_args,
+                                     input=text,
+                                     capture_output=True,
+                                     text=True)
+
+    return fortune_process.stdout
