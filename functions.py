@@ -90,14 +90,24 @@ def text_to_image(text: str,
     return png_bytes
 
 
-def ntfy_cli(message, title, priority):
+def ntfy_client(message, title, priority):
 
-    ntfy_server_hostname = secret_config.NTFY_SERVER_HOSTNAME
-    ntfy_topic = secret_config.NTFY_TOPIC
-    os.environ["NTFY_URL_HTTPS"] = f"https://{ntfy_server_hostname}/{ntfy_topic}"
-    os.environ["NTFY_AUTH_TOKEN"] = secret_config.NTFY_TOKEN
-    args = ["/home/u07/.venv/bin/python",
-            "/home/u07/bin/ntfy-cli.py",
+    #  ntfy_server_hostname = secret_config.NTFY_SERVER_HOSTNAME
+    #  ntfy_topic = secret_config.NTFY_TOPIC
+    #  os.environ["NTFY_TOPIC"] = secret_config.NTFY_TOPIC
+    #  os.environ["NTFY_URL_HTTPS"] = f"https://{ntfy_server_hostname}/{ntfy_topic}"
+    #  #  os.environ["NTFY_AUTH_TOKEN"] = secret_config.NTFY_TOKEN
+    #  os.environ["NTFY_TOKEN"] = secret_config.NTFY_TOKEN
+    #  args = ["/home/u07/.venv/bin/python",
+    #          "/home/u07/bin/ntfy-cli.py",
+    args = ["/home/u07/.venv/bin/ntfy-client",
+            "pub",
+            "--server-hostname",
+            secret_config.NTFY_SERVER_HOSTNAME,
+            "--topic",
+            secret_config.NTFY_TOPIC,
+            "--token",
+            secret_config.NTFY_TOKEN,
             "--message",
             message,
             "--title",

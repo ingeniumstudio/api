@@ -26,7 +26,7 @@ from litestar.openapi.plugins import YamlRenderPlugin
 
 from functions import get_dhammapada
 from functions import text_to_image
-from functions import ntfy_cli
+from functions import ntfy_client
 from functions import box as box_function
 
 @get("/")
@@ -97,7 +97,7 @@ async def text_to_img(text: str,
 
 @post("/webhook")
 async def github_webhook_notify(data: dict) -> dict:
-    ntfy_cli(str(data), "tits", priority="high")
+    ntfy_client(str(data), "from /webhook", priority="high")
 
     return data
 
