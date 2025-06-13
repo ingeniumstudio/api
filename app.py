@@ -29,6 +29,7 @@ from functions import text_to_image
 from functions import ntfy_client
 from functions import box as box_function
 from functions import cowsay as cowsay_function
+from functions import fortune as fortune_function
 
 @get("/")
 async def hello_world() -> dict[str, str]:
@@ -78,8 +79,13 @@ async def text_to_img(text: str,
                       background_color: str = "black",
                       font_size: int = 16,
                       box: bool = False,
-                      cowsay: bool = False
+                      cowsay: bool = False,
+                      fortune: bool = False
                       ) -> Response:
+
+    if fortune:
+        text = fortune_function(text=text)
+
     if cowsay:
         text = cowsay_function(text=text)
 
