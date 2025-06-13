@@ -49,12 +49,13 @@ def text_to_image(text: str,
                   font_size: int = 16):
 
     png_bytes = bytes()
-    text = bytes(text, "utf-8").decode("unicode_escape")
+    #  text = bytes(text, "utf-8").decode("unicode_escape")
+    #text = bytes(text, "utf-8")#.decode("utf-8")
     #  text = text.replace('\\n', '\n')
 
     with Drawing() as draw:
         #  draw.font =  "./font.ttf"
-        draw.font = "./RobotoMonoNerdFontMono-Regular.ttf"
+        draw.font = "RobotoMonoNerdFontMono-Regular.ttf"
         #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
         #  draw.font_size = 16
         draw.font_size = font_size
@@ -136,6 +137,7 @@ def box(text):
 
     #  line_list = sys.stdin.readlines()
     #  line_list = text.readlines()
+    text = text.replace('\\n', '\n')
     line_list = text.split("\n")
     lines = [line.expandtabs().strip('\n') for line in line_list]
 

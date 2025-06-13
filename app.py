@@ -38,17 +38,23 @@ async def hello_world() -> dict[str, str]:
 @get("/display-dhammapada", media_type=MediaType.TEXT)
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
-                             image_padding: int = 10,
+                             padding: int = 10,
                              foreground_color: str = "white",
                              background_color: str = "black",
-                             font_size: int = 16
+                             font_size: int = 16,
+                             box: bool = False
                              ) -> str | Response:
 
     dhammapada = get_dhammapada(number=number)
 
+    if box:
+        text = box_function(text=dhammapada)
+    else:
+        text = dhammapada
+
     if format == "png":
-        png_bytes = text_to_image(text=dhammapada,
-                                  padding=image_padding,
+        png_bytes = text_to_image(text=text,
+                                  padding=padding,
                                   foreground_color=foreground_color,
                                   background_color=background_color,
                                   font_size=font_size
@@ -61,7 +67,7 @@ async def display_dhammapada(number: int | None = None,
                              "inline; filename=image.png"})
         )
 
-    return dhammapada
+    return text
 
 
 @get("/text-to-image")
@@ -70,7 +76,7 @@ async def text_to_img(text: str,
                       foreground_color: str = "white",
                       background_color: str = "black",
                       font_size: int = 16,
-                      box: bool = True
+                      box: bool = False
                       ) -> Response:
     if box:
         text = box_function(text=text)
