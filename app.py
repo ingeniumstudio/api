@@ -95,9 +95,11 @@ async def text_to_img(text: str,
                          "inline; filename=image.png"})
     )
 
-@post("/webhook")
+@post("/webhook-github")
 async def github_webhook_notify(data: dict) -> dict:
-    ntfy_client(str(data), "from /webhook", priority="high")
+    ntfy_client(message=str(data),
+                title="from /webhook-github",
+                priority="high")
 
     return data
 
