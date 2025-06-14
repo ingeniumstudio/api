@@ -40,7 +40,7 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
-@get("/display-dhammapada", media_type=MediaType.TEXT)
+@get("/display-dhammapada", media_type=MediaType.TEXT, description="Display a random verse from the Dhammapada", summary="displays Dhammapada")
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
                              padding: int = 22,
@@ -109,7 +109,7 @@ async def text_to_img(text: str | None = None,
                          "inline; filename=image.png"})
     )
 
-@post("/webhook-github")
+@post("/webhook-github", include_in_schema=False)
 async def github_webhook_notify(data: dict) -> dict:
     ntfy_client(message=str(data),
                 title="from /webhook-github",
