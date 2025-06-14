@@ -25,6 +25,7 @@ from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
 from litestar.openapi.spec import Operation
+from litestar.openapi.spec import Parameter
 
 from functions import get_dhammapada
 from functions import text_to_image
@@ -81,7 +82,25 @@ async def display_dhammapada(number: int | None = None,
 
     return text
 
+#  text_to_image_openapi = {
+#          "summary": "Text to image they say",
+#          "description": "Generates an image from text",
+#          "parameters": [
+#              Parameter(name="text", param_in="query", description="testdesc")
+#              ]
+#          #  {
+#          #      "text":
+#          #          {
+#          #              #  "name": "text",
+#          #              #  "in": "query",
+#          #              "description": "Text to be rendered as image",
+#          #          }
+#          #      },
+#              #  ],
+#          }
+#
 text_to_image_openapi = {
+        "operation_id": "Textooooimg",
         "summary": "Text to image they say",
         "description": "Generates an image from text",
         }
@@ -99,7 +118,8 @@ async def text_to_img(text: str | None = None,
                       ) -> Response:
 
     if fortune or not text:
-        text = fortune_function(text=text)
+        text = fortune_function()
+        #  text = fortune_function(text=text)
 
     if cowsay:
         text = cowsay_function(text=text)

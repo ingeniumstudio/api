@@ -181,10 +181,10 @@ def cowsay(text: str):
 
     return cowsay_process.stdout
 
-def fortune(text: str):
+#  def fortune(text: str):
+def fortune():
     command_args = ["/usr/games/fortune"]
     fortune_process = subprocess.run(command_args,
-                                     input=text,
                                      capture_output=True,
                                      text=True)
 
