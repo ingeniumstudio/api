@@ -24,6 +24,8 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
+from litestar.openapi.spec import Operation
+
 from functions import get_dhammapada
 from functions import text_to_image
 from functions import ntfy_client
@@ -34,13 +36,18 @@ from functions import fortune as fortune_function
 #  DEBUG = True
 DEBUG = False
 
-@get("/")
+@get("/",
+     include_in_schema=False)
 async def hello_world() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
     return {"hello": "world!"}
 
 
-@get("/display-dhammapada", media_type=MediaType.TEXT, description="Display a random verse from the Dhammapada", summary="displays Dhammapada")
+@get("/display-dhammapada",
+        media_type=MediaType.TEXT,
+        summary="displays Dhammapada",
+        description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
+        )
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
                              padding: int = 22,
@@ -74,8 +81,13 @@ async def display_dhammapada(number: int | None = None,
 
     return text
 
+text_to_image_openapi = {
+        "summary": "Text to image they say",
+        "description": "Generates an image from text",
+        }
 
-@get("/text-to-image")
+@get("/text-to-image",
+     **text_to_image_openapi)
 async def text_to_img(text: str | None = None,
                       padding: int = 0,
                       foreground_color: str = "white",
@@ -109,7 +121,8 @@ async def text_to_img(text: str | None = None,
                          "inline; filename=image.png"})
     )
 
-@post("/webhook-github", include_in_schema=False)
+@post("/webhook-github",
+      include_in_schema=False)
 async def github_webhook_notify(data: dict) -> dict:
     ntfy_client(message=str(data),
                 title="from /webhook-github",
@@ -126,6 +139,9 @@ route_handlers = [
 
 template_config = TemplateConfig(directory=Path(__file__) / "templates",
                                  engine=JinjaTemplateEngine)
+
+# https://docs.litestar.dev/2/usage/openapi/schema_generation.html
+# https://docs.litestar.dev/2/reference/app.html
 
 app = Litestar(route_handlers=route_handlers,
                template_config=template_config,
