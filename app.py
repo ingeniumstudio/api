@@ -14,6 +14,7 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
+from litestar.params import Parameter
 from litestar.logging import LoggingConfig
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -28,10 +29,11 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
+from litestar.openapi.spec import Example
 from litestar.openapi.spec import OpenAPIMediaType
 from litestar.openapi.spec import OpenAPIType
 from litestar.openapi.spec import Operation
-from litestar.openapi.spec import Parameter
+from litestar.openapi.spec import Parameter as OASParameter
 from litestar.openapi.spec import RequestBody
 from litestar.openapi.spec import Schema
 
@@ -91,38 +93,27 @@ async def display_dhammapada(number: int | None = None,
     return text
 
 
-@dataclass
+#  @dataclass
 class TextToImageOperation(Operation):
+    #  summary = "summ"
+    #  description = "test"
 
     def __init__(self, *args, **kwargs) -> None:
-        pass
+        self.summary = "summry"
+        self.description = "teste"
+        #  self.parameters = [
+        #          OASParameter(name="text", param_in="query", description="he ya", example="oie")
+        #
+        #          ]
 
-    def __post_init__(self, *args, **kwargs) -> None:
-    #  def __init__(self) -> None:
-        #  self.operation_id = "maaahmaatxttoimg"
-        self.description = "Renders `text` to image"
-        self.parameters = [
-            Parameter(description="xxxxxxx", name="text", param_in="query")
-        ]
-        #  self.request_body = RequestBody(
-        #          content={
-        #              "text": OpenAPIMediaType(
-        #                  schema=Schema(
-        #                      title="Query",
-        #                      type=OpenAPIType.STRING,
-        #                      #  example="OK4Y"
-        #                      )
-        #                  )
-        #              }
-        #          )
-
-@get("/text-to-image")
-#  @get("/text-to-image",
-#       operation_class=TextToImageOperation)
-        #  opt={"summary": "ik", 'description':':cwkss'})
+#  @get("/text-to-image", operation_class=TextToImageOperation)
+#  async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
+    #  title="Teh Text"),
 #  async def text_to_img(text: str | None = None,
-#  async def text_to_img(text: str,
-async def text_to_img(text: Annotated[str|None, Parameter( description="xxxxxxx", name="text", param_in="query")] = None,
+    #  title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT", external_value="extt")]),
+@get("/text-to-image", operation_id="clotok")
+async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
+    title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT")]),
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
@@ -131,6 +122,10 @@ async def text_to_img(text: Annotated[str|None, Parameter( description="xxxxxxx"
                       cowsay: bool = False,
                       fortune: bool = False
                       ) -> Response:
+    """Test
+
+    :param text: text to rdrd
+    """
 
     if fortune or not text:
         text = fortune_function()
