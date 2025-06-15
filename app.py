@@ -164,7 +164,7 @@ async def get_box(text: str) -> str:
 
 @get("/fortune",
         media_type=MediaType.TEXT,
-        summary="display fortune",
+        summary="displays fortune",
         description="Displays a random fortune")
 async def get_fortune() -> str:
     fortune_text = fortune_function()
@@ -220,8 +220,9 @@ app = Litestar(route_handlers=route_handlers,
                        ScalarRenderPlugin(),
                        StoplightRenderPlugin(),
                        SwaggerRenderPlugin(),
+                       #  SwaggerRenderPlugin(swagger_ui_settings={"tryItOutEnabled": False}),
                        YamlRenderPlugin()
-                       ]
+                       ],
                    ),
                pdb_on_exception=DEBUG
                )

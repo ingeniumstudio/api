@@ -32,7 +32,7 @@ def get_dhammapada(number: int | None = None):
         verse_numbers, verse = dhammapada_json[random_choice]
 
     verses = ", ".join([str(verse_number) for verse_number in verse_numbers])
-    signature = f"- Dhammapada {verses}"
+    signature = f"— Dhammapada {verses}"
     #  signature = f"— Dhammapada {verses}"
 
     text_width = max([len(line) for line in verse.splitlines()])
