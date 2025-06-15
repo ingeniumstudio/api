@@ -188,4 +188,4 @@ def fortune():
                                      capture_output=True,
                                      text=True)
 
-    return fortune_process.stdout
+    return fortune_process.stdout.strip()

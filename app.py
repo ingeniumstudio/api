@@ -4,13 +4,17 @@ import subprocess
 from pathlib import Path
 from re import template
 from typing import IO
+from typing import Annotated
 
+from attr import dataclass
 from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
 from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
+
+from litestar.logging import LoggingConfig
 
 from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.response import Template
@@ -24,8 +28,12 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
+from litestar.openapi.spec import OpenAPIMediaType
+from litestar.openapi.spec import OpenAPIType
 from litestar.openapi.spec import Operation
 from litestar.openapi.spec import Parameter
+from litestar.openapi.spec import RequestBody
+from litestar.openapi.spec import Schema
 
 from functions import get_dhammapada
 from functions import text_to_image
@@ -82,32 +90,39 @@ async def display_dhammapada(number: int | None = None,
 
     return text
 
-#  text_to_image_openapi = {
-#          "summary": "Text to image they say",
-#          "description": "Generates an image from text",
-#          "parameters": [
-#              Parameter(name="text", param_in="query", description="testdesc")
-#              ]
-#          #  {
-#          #      "text":
-#          #          {
-#          #              #  "name": "text",
-#          #              #  "in": "query",
-#          #              "description": "Text to be rendered as image",
-#          #          }
-#          #      },
-#              #  ],
-#          }
-#
-text_to_image_openapi = {
-        "operation_id": "Textooooimg",
-        "summary": "Text to image they say",
-        "description": "Generates an image from text",
-        }
 
-@get("/text-to-image",
-     **text_to_image_openapi)
-async def text_to_img(text: str | None = None,
+@dataclass
+class TextToImageOperation(Operation):
+
+    def __init__(self, *args, **kwargs) -> None:
+        pass
+
+    def __post_init__(self, *args, **kwargs) -> None:
+    #  def __init__(self) -> None:
+        #  self.operation_id = "maaahmaatxttoimg"
+        self.description = "Renders `text` to image"
+        self.parameters = [
+            Parameter(description="xxxxxxx", name="text", param_in="query")
+        ]
+        #  self.request_body = RequestBody(
+        #          content={
+        #              "text": OpenAPIMediaType(
+        #                  schema=Schema(
+        #                      title="Query",
+        #                      type=OpenAPIType.STRING,
+        #                      #  example="OK4Y"
+        #                      )
+        #                  )
+        #              }
+        #          )
+
+@get("/text-to-image")
+#  @get("/text-to-image",
+#       operation_class=TextToImageOperation)
+        #  opt={"summary": "ik", 'description':':cwkss'})
+#  async def text_to_img(text: str | None = None,
+async def text_to_img(text: str,
+#  async def text_to_img(text: Annotated[str|None, Parameter( description="xxxxxxx", name="text", param_in="query")] = None,
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
@@ -157,6 +172,17 @@ route_handlers = [
         github_webhook_notify,
         ]
 
+logging_config = LoggingConfig(
+        root={
+            "level": "INFO",
+            "handlers": ["queue_listener"]
+            },
+        formatters={
+            "standard": { "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s" }
+            },
+        log_exceptions="always"
+        )
+
 template_config = TemplateConfig(directory=Path(__file__) / "templates",
                                  engine=JinjaTemplateEngine)
 
@@ -164,10 +190,12 @@ template_config = TemplateConfig(directory=Path(__file__) / "templates",
 # https://docs.litestar.dev/2/reference/app.html
 
 app = Litestar(route_handlers=route_handlers,
+               logging_config=logging_config,
                template_config=template_config,
                openapi_config=OpenAPIConfig(
                    title='Yoke API',
                    version='0.0.1',
+                   use_handler_docstrings=False,
                    render_plugins=[
                        RapidocRenderPlugin(),
                        RedocRenderPlugin(),
