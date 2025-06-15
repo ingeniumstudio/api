@@ -162,6 +162,14 @@ async def get_box(text: str) -> str:
 
     return text_box
 
+@get("/fortune",
+        media_type=MediaType.TEXT,
+        summary="display fortune",
+        description="Displays a random fortune")
+async def get_fortune() -> str:
+    fortune_text = fortune_function().strip()
+
+    return fortune_text
 
 @post("/webhook-github",
       include_in_schema=False)
@@ -178,6 +186,7 @@ route_handlers = [
         text_to_img,
         get_cowsay,
         get_box,
+        get_fortune,
         github_webhook_notify,
         ]
 
