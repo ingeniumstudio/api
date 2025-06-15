@@ -167,7 +167,7 @@ async def get_box(text: str) -> str:
         summary="display fortune",
         description="Displays a random fortune")
 async def get_fortune() -> str:
-    fortune_text = fortune_function().strip()
+    fortune_text = fortune_function()
 
     return fortune_text
 
