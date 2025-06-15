@@ -121,8 +121,8 @@ class TextToImageOperation(Operation):
 #       operation_class=TextToImageOperation)
         #  opt={"summary": "ik", 'description':':cwkss'})
 #  async def text_to_img(text: str | None = None,
-async def text_to_img(text: str,
-#  async def text_to_img(text: Annotated[str|None, Parameter( description="xxxxxxx", name="text", param_in="query")] = None,
+#  async def text_to_img(text: str,
+async def text_to_img(text: Annotated[str|None, Parameter( description="xxxxxxx", name="text", param_in="query")] = None,
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
