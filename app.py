@@ -106,14 +106,10 @@ class TextToImageOperation(Operation):
         #
         #          ]
 
-#  @get("/text-to-image", operation_class=TextToImageOperation)
 #  async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
-    #  title="Teh Text"),
-#  async def text_to_img(text: str | None = None,
-    #  title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT", external_value="extt")]),
-@get("/text-to-image", operation_id="clotok")
-async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
-    title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT")]),
+#      title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT")]),
+@get("/text-to-image")
+async def text_to_img(text: str | None,
                       padding: int = 0,
                       foreground_color: str = "white",
                       background_color: str = "black",
@@ -122,14 +118,9 @@ async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
                       cowsay: bool = False,
                       fortune: bool = False
                       ) -> Response:
-    """Test
-
-    :param text: text to rdrd
-    """
 
     if fortune or not text:
         text = fortune_function()
-        #  text = fortune_function(text=text)
 
     if cowsay:
         text = cowsay_function(text=text)
@@ -151,6 +142,27 @@ async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
                          "inline; filename=image.png"})
     )
 
+
+@get("/cowsay",
+        media_type=MediaType.TEXT,
+        summary="cow sayin'",
+        description="Cowsays `text`")
+async def get_cowsay(text: str) -> str:
+    cowsaying = cowsay_function(text=text)
+
+    return cowsaying
+
+
+@get("/box",
+        media_type=MediaType.TEXT,
+        summary="text inside box",
+        description="Displays `text` inside box")
+async def get_box(text: str) -> str:
+    text_box = box_function(text=text)
+
+    return text_box
+
+
 @post("/webhook-github",
       include_in_schema=False)
 async def github_webhook_notify(data: dict) -> dict:
@@ -164,6 +176,8 @@ route_handlers = [
         hello_world,
         display_dhammapada,
         text_to_img,
+        get_cowsay,
+        get_box,
         github_webhook_notify,
         ]
 
