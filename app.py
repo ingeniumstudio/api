@@ -122,7 +122,7 @@ parameter_optional_text = Annotated[str | None,
                                         max_length=8192
                                     )]
 
-parameter_required_text = Annotated[str | None,
+parameter_required_text = Annotated[str,
                                     Parameter(
                                         description="Input text",
                                         min_length=0,
@@ -209,28 +209,28 @@ async def text_to_img(
 
 
 @get("/cowsay",
-        media_type=MediaType.TEXT,
-        summary="cow sayin'",
-        description="Cowsays `text`")
-async def get_cowsay(text: str) -> str:
+     media_type=MediaType.TEXT,
+     summary="cow sayin'",
+     description="Cowsays `text`")
+async def get_cowsay(text: parameter_required_text) -> str:
     cowsaying = cowsay_function(text=text)
 
     return cowsaying
 
 
 @get("/box",
-        media_type=MediaType.TEXT,
-        summary="text inside box",
-        description="Displays `text` inside box")
-async def get_box(text: str) -> str:
+     media_type=MediaType.TEXT,
+     summary="text inside box",
+     description="Displays `text` inside box")
+async def get_box(text: parameter_required_text) -> str:
     text_box = box_function(text=text)
 
     return text_box
 
 @get("/fortune",
-        media_type=MediaType.TEXT,
-        summary="displays fortune",
-        description="Displays a random fortune")
+     media_type=MediaType.TEXT,
+     summary="displays fortune",
+     description="Displays a random fortune")
 async def get_fortune() -> str:
     fortune_text = fortune_function()
 
@@ -285,7 +285,6 @@ app = Litestar(route_handlers=route_handlers,
                        ScalarRenderPlugin(),
                        StoplightRenderPlugin(),
                        SwaggerRenderPlugin(),
-                       #  SwaggerRenderPlugin(swagger_ui_settings={"tryItOutEnabled": False}),
                        YamlRenderPlugin()
                        ],
                    ),
