@@ -105,18 +105,83 @@ class TextToImageOperation(Operation):
         #          OASParameter(name="text", param_in="query", description="he ya", example="oie")
         #
         #          ]
+#  parameter_optional_text = Annotated[
+#          str | None,
+#          Parameter(
+#              description="Input text",
+#              title="Text",
+#              max_length=5
+#
+#              )]
 
-#  async def text_to_img(text: str | None = Parameter(description="descr1pt1onz",
-#      title="Teh Text", examples=[Example(summary="hett", description="* descc", value="WOT")]),
+# https://docs.litestar.dev/latest/reference/params.html#litestar.params.Parameter
+parameter_optional_text = Annotated[str | None,
+                                    Parameter(
+                                        description="Input text",
+                                        min_length=0,
+                                        max_length=8192
+                                    )]
+
+parameter_required_text = Annotated[str | None,
+                                    Parameter(
+                                        description="Input text",
+                                        min_length=0,
+                                        max_length=8192
+                                    )]
+
+parameter_padding = Annotated[int,
+                              Parameter(
+                                  description="Inner padding",
+                                  ge=0,
+                                  le=1024
+                              )]
+
+parameter_foreground_color = Annotated[str | None,
+                                       Parameter(
+                                           description="**Foreground color**",
+                                           min_length=0,
+                                           max_length=32
+                                       )]
+
+parameter_background_color = Annotated[str | None,
+                                       Parameter(
+                                           description="Background color",
+                                           min_length=0,
+                                           max_length=32
+                                       )]
+
+parameter_font_size = Annotated[int,
+                                Parameter(
+                                    description="Font size",
+                                    ge=5,
+                                    le=288
+                                )]
+
+parameter_box = Annotated[bool,
+                          Parameter(
+                              description="Bounding box",
+                          )]
+
+parameter_cowsay = Annotated[bool,
+                             Parameter(
+                                 description="Cowsay input `text`",
+                             )]
+
+parameter_fortune = Annotated[bool,
+                              Parameter(
+                                  description="Show random fortune; input `text` is ignored if `true`",
+                              )]
+
 @get("/text-to-image")
-async def text_to_img(text: str | None,
-                      padding: int = 0,
-                      foreground_color: str = "white",
-                      background_color: str = "black",
-                      font_size: int = 16,
-                      box: bool = False,
-                      cowsay: bool = False,
-                      fortune: bool = False
+async def text_to_img(
+                      text: parameter_optional_text,
+                      padding: parameter_padding = 0,
+                      foreground_color: parameter_foreground_color = "white",
+                      background_color: parameter_background_color = "black",
+                      font_size: parameter_font_size = 16,
+                      box: parameter_box = False,
+                      cowsay: parameter_cowsay = False,
+                      fortune: parameter_fortune = False,
                       ) -> Response:
 
     if fortune or not text:
