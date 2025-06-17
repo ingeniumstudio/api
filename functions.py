@@ -1,3 +1,5 @@
+import hmac
+import hashlib
 import json
 import os
 import random
@@ -8,8 +10,10 @@ from wand.image import Image
 from wand.drawing import Drawing
 from wand.color import Color
 
-if os.path.isfile("secret_config.py"):
-    import secret_config
+import secret_config
+
+#  if os.path.isfile("secret_config.py"):
+#      import secret_config
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
@@ -89,12 +93,28 @@ def text_to_image(text: str,
 
     return png_bytes
 
-def process_github_webhook(json_data):
-    #  data = json.loads(json_data)
-    data = json_data
+def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
+    algo, provided_hash = signature.split('=')
 
-    file_separator = ", "
+    computed_hash = hmac.new(key=webhook_secret.encode("utf-8"),
+                             msg=data_bytes,
+                             digestmod=hashlib.sha256).hexdigest()
+
+    #  if not hmac.compare_digest(computed_hash, provided_hash):
+    #      return "error checking"
+    #  else:
+    #      return "checking ok"
+    return hmac.compare_digest(computed_hash, provided_hash)
+
+
+def process_github_webhook(data):
+
+    #  data = json.loads(json_data)
+    #  #  data = json_data
+
+    #  file_separator = ", "
     file_separator = "\n"
+
     message = f"""\
 Repo: {data["repository"]["full_name"]} ({data["repository"]["visibility"]})
 Pusher: {data["pusher"]["name"]}
@@ -102,13 +122,13 @@ Pusher: {data["pusher"]["name"]}
 Date: {data["head_commit"]["timestamp"]}
 
 ａｄｄｅｄ
-{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["added"]])}
+{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["added"]]) or "—"}
 
 ｒｅｍｏｖｅｄ
 {file_separator.join([f"  · “{file}”" for file in data["head_commit"]["removed"]]) or "—"}
 
 ｍｏｄｉｆｉｅｄ
-{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["modified"]])}
+{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["modified"]]) or "—"}
 
 Commit: {data["head_commit"]["url"]}
 """

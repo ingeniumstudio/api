@@ -6,6 +6,7 @@ from pathlib import Path
 from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
+from litestar import Request
 from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
@@ -30,6 +31,7 @@ from functions import ntfy_client
 from functions import box as box_function
 from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
+from functions import verify_github_webhook_signature
 from functions import process_github_webhook
 
 import secret_config
@@ -171,14 +173,26 @@ async def get_fortune() -> str:
 
 @post("/webhook-github",
       include_in_schema=False)
-async def github_webhook_notify(data: dict) -> dict:
-    message = process_github_webhook(data)
-    #  ntfy_client(message=str(data),
+async def github_webhook_notify(request: Request, data: dict) -> str:
+    signature_header = request.headers.getone("X-Hub-Signature-256")
+    data_bytes = await request.body()
+
+    if verify_github_webhook_signature(data_bytes=data_bytes,
+                                       webhook_secret=\
+                                           secret_config.GITHUB_WEBHOOK_SECRET,
+                                       signature=signature_header):
+
+        data_dict = data
+        message = process_github_webhook(data=data_dict)
+
+    else:
+        message = "error checking"
+
     ntfy_client(message=message,
                 title="from /webhook-github",
                 priority="high")
 
-    return data
+    return message
 
 
 route_handlers = [
