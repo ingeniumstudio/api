@@ -63,10 +63,10 @@ from aux.params import param_dhammapada_format
 #  DEBUG = True
 DEBUG = False
 
-DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
+#  DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
 DB_FILE_DELETE_IF_EXISTS = False  # recreate db file
-DB_IN_MEMORY = True
-#  DB_IN_MEMORY = False
+#  DB_IN_MEMORY = True
+DB_IN_MEMORY = False
 
 if DB_IN_MEMORY:
     SQLITE_URL = f"sqlite://"  # in-memory
@@ -212,7 +212,7 @@ async def get_specific() -> str:
     statement = select(Text)
     results = session.exec(statement)
 
-    specific_text = "\n".join([f"{result.id}: {result.text}"
+    specific_text = "\n\n".join([f"{result.id}: {result.text}"
                                for result in results])
 
     session.close()
