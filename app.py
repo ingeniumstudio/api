@@ -30,6 +30,7 @@ from functions import ntfy_client
 from functions import box as box_function
 from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
+from functions import process_github_webhook
 
 import secret_config
 
@@ -171,7 +172,9 @@ async def get_fortune() -> str:
 @post("/webhook-github",
       include_in_schema=False)
 async def github_webhook_notify(data: dict) -> dict:
-    ntfy_client(message=str(data),
+    message = process_github_webhook(data)
+    #  ntfy_client(message=str(data),
+    ntfy_client(message=message,
                 title="from /webhook-github",
                 priority="high")
 

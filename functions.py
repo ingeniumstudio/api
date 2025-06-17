@@ -89,6 +89,31 @@ def text_to_image(text: str,
 
     return png_bytes
 
+def process_github_webhook(json_data):
+    #  data = json.loads(json_data)
+    data = json_data
+
+    file_separator = ", "
+    file_separator = "\n"
+    message = f"""\
+Repo: {data["repository"]["full_name"]} ({data["repository"]["visibility"]})
+Pusher: {data["pusher"]["name"]}
+
+Date: {data["head_commit"]["timestamp"]}
+
+Added:
+{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["added"]])}
+
+Removed:
+{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["removed"]]) or "—"}
+
+Modified:
+{file_separator.join([f"  · “{file}”" for file in data["head_commit"]["modified"]])}
+
+{data["head_commit"]["url"]}
+"""
+
+    return message
 
 def ntfy_client(message, title, priority):
 
