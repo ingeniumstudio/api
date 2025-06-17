@@ -10,7 +10,6 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
-#  from litestar.params import Parameter
 from litestar.logging import LoggingConfig
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -34,25 +33,28 @@ from functions import fortune as fortune_function
 
 import secret_config
 
+from aux.logging import logging_config
+
 #  from aux.operations import TextToImageOperation
 
-from aux.params import parameter_optional_text
-from aux.params import parameter_required_text
-from aux.params import parameter_padding
-from aux.params import parameter_foreground_color
-from aux.params import parameter_background_color
-from aux.params import parameter_font_size
-from aux.params import parameter_box
-from aux.params import parameter_cowsay
-from aux.params import parameter_fortune
-from aux.params import parameter_dhammapada_number
-from aux.params import parameter_dhammapada_format
+from aux.params import param_optional_text
+from aux.params import param_required_text
+from aux.params import param_padding
+from aux.params import param_foreground_color
+from aux.params import param_background_color
+from aux.params import param_font_size
+from aux.params import param_box
+from aux.params import param_cowsay
+from aux.params import param_fortune
+from aux.params import param_dhammapada_number
+from aux.params import param_dhammapada_format
 
 #  DEBUG = True
 DEBUG = False
 
 SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
+
 
 @get("/",
      include_in_schema=False)
@@ -66,13 +68,13 @@ async def hello_world() -> dict[str, str]:
         summary="displays Dhammapada",
         description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
         )
-async def display_dhammapada(number: parameter_dhammapada_number = None,
-                             format: parameter_dhammapada_format = None,
-                             padding: parameter_padding = 22,
-                             foreground_color: parameter_foreground_color = "white",
-                             background_color: parameter_background_color = "black",
-                             font_size: parameter_font_size = 16,
-                             box: parameter_box = False
+async def display_dhammapada(number: param_dhammapada_number = None,
+                             format: param_dhammapada_format = None,
+                             padding: param_padding = 22,
+                             foreground_color: param_foreground_color = "white",
+                             background_color: param_background_color = "black",
+                             font_size: param_font_size = 16,
+                             box: param_box = False
                              ) -> str | Response:
 
     dhammapada = get_dhammapada(number=number)
@@ -102,14 +104,14 @@ async def display_dhammapada(number: parameter_dhammapada_number = None,
 
 @get("/text-to-image")
 async def text_to_img(
-                      text: parameter_optional_text,
-                      padding: parameter_padding = 0,
-                      foreground_color: parameter_foreground_color = "white",
-                      background_color: parameter_background_color = "black",
-                      font_size: parameter_font_size = 16,
-                      box: parameter_box = False,
-                      cowsay: parameter_cowsay = False,
-                      fortune: parameter_fortune = False,
+                      text: param_optional_text,
+                      padding: param_padding = 0,
+                      foreground_color: param_foreground_color = "white",
+                      background_color: param_background_color = "black",
+                      font_size: param_font_size = 16,
+                      box: param_box = False,
+                      cowsay: param_cowsay = False,
+                      fortune: param_fortune = False,
                       ) -> Response:
 
     if fortune or not text:
@@ -140,7 +142,7 @@ async def text_to_img(
      media_type=MediaType.TEXT,
      summary="cow sayin'",
      description="Cowsays `text`")
-async def get_cowsay(text: parameter_required_text) -> str:
+async def get_cowsay(text: param_required_text) -> str:
     cowsaying = cowsay_function(text=text)
 
     return cowsaying
@@ -150,10 +152,11 @@ async def get_cowsay(text: parameter_required_text) -> str:
      media_type=MediaType.TEXT,
      summary="text inside box",
      description="Displays `text` inside box")
-async def get_box(text: parameter_required_text) -> str:
+async def get_box(text: param_required_text) -> str:
     text_box = box_function(text=text)
 
     return text_box
+
 
 @get("/fortune",
      media_type=MediaType.TEXT,
@@ -164,6 +167,7 @@ async def get_fortune() -> str:
 
     return fortune_text
 
+
 @post("/webhook-github",
       include_in_schema=False)
 async def github_webhook_notify(data: dict) -> dict:
@@ -172,6 +176,7 @@ async def github_webhook_notify(data: dict) -> dict:
                 priority="high")
 
     return data
+
 
 route_handlers = [
         hello_world,
@@ -183,16 +188,6 @@ route_handlers = [
         github_webhook_notify,
         ]
 
-logging_config = LoggingConfig(
-        root={
-            "level": "INFO",
-            "handlers": ["queue_listener"]
-            },
-        formatters={
-            "standard": { "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s" }
-            },
-        log_exceptions="always"
-        )
 
 template_config = TemplateConfig(directory=Path(__file__) / "templates",
                                  engine=JinjaTemplateEngine)
