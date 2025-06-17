@@ -2,11 +2,7 @@ import os
 import subprocess
 
 from pathlib import Path
-from re import template
-from typing import IO
-from typing import Annotated
 
-from attr import dataclass
 from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
@@ -14,7 +10,7 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
-from litestar.params import Parameter
+#  from litestar.params import Parameter
 from litestar.logging import LoggingConfig
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -29,14 +25,6 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
-from litestar.openapi.spec import Example
-from litestar.openapi.spec import OpenAPIMediaType
-from litestar.openapi.spec import OpenAPIType
-from litestar.openapi.spec import Operation
-from litestar.openapi.spec import Parameter as OASParameter
-from litestar.openapi.spec import RequestBody
-from litestar.openapi.spec import Schema
-
 from functions import get_dhammapada
 from functions import text_to_image
 from functions import ntfy_client
@@ -45,6 +33,8 @@ from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
 
 import secret_config
+
+#  from aux.operations import TextToImageOperation
 
 from aux.params import parameter_optional_text
 from aux.params import parameter_required_text
@@ -76,11 +66,11 @@ async def hello_world() -> dict[str, str]:
         )
 async def display_dhammapada(number: int | None = None,
                              format: str | None = None,
-                             padding: int = 22,
-                             foreground_color: str = "white",
-                             background_color: str = "black",
-                             font_size: int = 16,
-                             box: bool = False
+                             padding: parameter_padding = 22,
+                             foreground_color: parameter_foreground_color = "white",
+                             background_color: parameter_background_color = "black",
+                             font_size: parameter_font_size = 16,
+                             box: parameter_box = False
                              ) -> str | Response:
 
     dhammapada = get_dhammapada(number=number)
@@ -107,86 +97,6 @@ async def display_dhammapada(number: int | None = None,
 
     return text
 
-
-#  @dataclass
-class TextToImageOperation(Operation):
-    #  summary = "summ"
-    #  description = "test"
-
-    def __init__(self, *args, **kwargs) -> None:
-        self.summary = "summry"
-        self.description = "teste"
-        #  self.parameters = [
-        #          OASParameter(name="text", param_in="query", description="he ya", example="oie")
-        #
-        #          ]
-#  parameter_optional_text = Annotated[
-#          str | None,
-#          Parameter(
-#              description="Input text",
-#              title="Text",
-#              max_length=5
-#
-#              )]
-
-# https://docs.litestar.dev/latest/reference/params.html#litestar.params.Parameter
-#  parameter_optional_text = Annotated[str | None,
-#                                      Parameter(
-#                                          description="Input text",
-#                                          min_length=0,
-#                                          max_length=8192
-#                                      )]
-
-#  parameter_required_text = Annotated[str,
-#                                      Parameter(
-#                                          description="Input text",
-#                                          min_length=0,
-#                                          max_length=8192
-#                                      )]
-#
-#  parameter_padding = Annotated[int,
-#                                Parameter(
-#                                    description="Inner padding",
-#                                    ge=0,
-#                                    le=1024
-#                                )]
-
-#  parameter_foreground_color = Annotated[str | None,
-#                                         Parameter(
-#                                             description="**Foreground color**",
-#                                             min_length=0,
-#                                             max_length=32
-#                                         )]
-#
-#  parameter_background_color = Annotated[str | None,
-#                                         Parameter(
-#                                             description="Background color",
-#                                             min_length=0,
-#                                             max_length=32
-#                                         )]
-#
-#  parameter_font_size = Annotated[int,
-#                                  Parameter(
-#                                      description="Font size",
-#                                      ge=5,
-#                                      le=288
-#                                  )]
-
-#  parameter_box = Annotated[bool,
-#                            Parameter(
-#                                description="Bounding box",
-#                            )]
-#
-#  parameter_cowsay = Annotated[bool,
-#                               Parameter(
-#                                   description="Cowsay input `text`",
-#                               )]
-#
-#  parameter_fortune = Annotated[bool,
-#                                Parameter(
-#                                    description="Show random fortune; input `text` is ignored if `true`",
-#                                )]
-#
 
 @get("/text-to-image")
 async def text_to_img(
