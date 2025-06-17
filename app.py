@@ -44,8 +44,23 @@ from functions import box as box_function
 from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
 
+import secret_config
+
+from aux.params import parameter_optional_text
+from aux.params import parameter_required_text
+from aux.params import parameter_padding
+from aux.params import parameter_foreground_color
+from aux.params import parameter_background_color
+from aux.params import parameter_font_size
+from aux.params import parameter_box
+from aux.params import parameter_cowsay
+from aux.params import parameter_fortune
+
 #  DEBUG = True
 DEBUG = False
+
+SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
+SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
 
 @get("/",
      include_in_schema=False)
@@ -115,62 +130,63 @@ class TextToImageOperation(Operation):
 #              )]
 
 # https://docs.litestar.dev/latest/reference/params.html#litestar.params.Parameter
-parameter_optional_text = Annotated[str | None,
-                                    Parameter(
-                                        description="Input text",
-                                        min_length=0,
-                                        max_length=8192
-                                    )]
+#  parameter_optional_text = Annotated[str | None,
+#                                      Parameter(
+#                                          description="Input text",
+#                                          min_length=0,
+#                                          max_length=8192
+#                                      )]
 
-parameter_required_text = Annotated[str,
-                                    Parameter(
-                                        description="Input text",
-                                        min_length=0,
-                                        max_length=8192
-                                    )]
+#  parameter_required_text = Annotated[str,
+#                                      Parameter(
+#                                          description="Input text",
+#                                          min_length=0,
+#                                          max_length=8192
+#                                      )]
+#
+#  parameter_padding = Annotated[int,
+#                                Parameter(
+#                                    description="Inner padding",
+#                                    ge=0,
+#                                    le=1024
+#                                )]
 
-parameter_padding = Annotated[int,
-                              Parameter(
-                                  description="Inner padding",
-                                  ge=0,
-                                  le=1024
-                              )]
+#  parameter_foreground_color = Annotated[str | None,
+#                                         Parameter(
+#                                             description="**Foreground color**",
+#                                             min_length=0,
+#                                             max_length=32
+#                                         )]
+#
+#  parameter_background_color = Annotated[str | None,
+#                                         Parameter(
+#                                             description="Background color",
+#                                             min_length=0,
+#                                             max_length=32
+#                                         )]
+#
+#  parameter_font_size = Annotated[int,
+#                                  Parameter(
+#                                      description="Font size",
+#                                      ge=5,
+#                                      le=288
+#                                  )]
 
-parameter_foreground_color = Annotated[str | None,
-                                       Parameter(
-                                           description="**Foreground color**",
-                                           min_length=0,
-                                           max_length=32
-                                       )]
-
-parameter_background_color = Annotated[str | None,
-                                       Parameter(
-                                           description="Background color",
-                                           min_length=0,
-                                           max_length=32
-                                       )]
-
-parameter_font_size = Annotated[int,
-                                Parameter(
-                                    description="Font size",
-                                    ge=5,
-                                    le=288
-                                )]
-
-parameter_box = Annotated[bool,
-                          Parameter(
-                              description="Bounding box",
-                          )]
-
-parameter_cowsay = Annotated[bool,
-                             Parameter(
-                                 description="Cowsay input `text`",
-                             )]
-
-parameter_fortune = Annotated[bool,
-                              Parameter(
-                                  description="Show random fortune; input `text` is ignored if `true`",
-                              )]
+#  parameter_box = Annotated[bool,
+#                            Parameter(
+#                                description="Bounding box",
+#                            )]
+#
+#  parameter_cowsay = Annotated[bool,
+#                               Parameter(
+#                                   description="Cowsay input `text`",
+#                               )]
+#
+#  parameter_fortune = Annotated[bool,
+#                                Parameter(
+#                                    description="Show random fortune; input `text` is ignored if `true`",
+#                                )]
+#
 
 @get("/text-to-image")
 async def text_to_img(
