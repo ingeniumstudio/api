@@ -1,4 +1,5 @@
 from typing import Annotated
+from typing import Literal
 
 from litestar.params import Parameter
 
@@ -90,12 +91,14 @@ param_dhammapada_number = Annotated[int | None,
                                             le=423
                                         )]
 
-param_dhammapada_format = Annotated[str | None,
+ENUM = Literal["txt", "png"]  # FIXME
+param_dhammapada_format = Annotated[ENUM,
+#  param_dhammapada_format = Annotated[str | None,
                                         Parameter(
                                             description="Output format; `png`"
                                                         " for `image/png` or"
                                                         " empty for"
                                                         " `text/plain`",
-                                            min_length=0,
-                                            max_length=11
+                                            #  min_length=0,
+                                            #  max_length=11
                                         )]

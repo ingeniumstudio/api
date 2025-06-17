@@ -15,6 +15,7 @@ import secret_config
 #  if os.path.isfile("secret_config.py"):
 #      import secret_config
 
+
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
 
@@ -93,6 +94,7 @@ def text_to_image(text: str,
 
     return png_bytes
 
+
 def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
     algo, provided_hash = signature.split('=')
 
@@ -135,6 +137,7 @@ Commit: {data["head_commit"]["url"]}
 
     return message
 
+
 def ntfy_client(message, title, priority):
 
     args = ["/home/u07/.venv/bin/ntfy-client",
@@ -154,6 +157,7 @@ def ntfy_client(message, title, priority):
             ]
     #  args = ["ntfy-cli.py", "--message", data]
     subprocess.run(args)
+
 
 def box(text):
 
@@ -212,10 +216,8 @@ def box(text):
 
     box = str('\n').join(box_parts)
 
-    #  print(box, end="\n"*2)
-    #  print(box)
-
     return box
+
 
 def cowsay(text: str):
     command_args = ["/usr/games/cowsay", "-n"]
@@ -226,7 +228,7 @@ def cowsay(text: str):
 
     return cowsay_process.stdout
 
-#  def fortune(text: str):
+
 def fortune():
     command_args = ["/usr/games/fortune"]
     fortune_process = subprocess.run(command_args,
