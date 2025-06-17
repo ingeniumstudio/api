@@ -63,21 +63,25 @@ from aux.params import param_dhammapada_format
 #  DEBUG = True
 DEBUG = False
 
-DB_DELETE_IF_EXISTS = True
+DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
+DB_FILE_DELETE_IF_EXISTS = False  # recreate db file
+DB_IN_MEMORY = True
+#  DB_IN_MEMORY = False
 
-SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
-SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
-SQLITE_URL_IN_MEMORY = f"sqlite://"
+if DB_IN_MEMORY:
+    SQLITE_URL = f"sqlite://"  # in-memory
+else:
+    SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
+    SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
 
-if DB_DELETE_IF_EXISTS and os.path.exists(SQLITE_FILE_NAME):
-    os.remove(SQLITE_FILE_NAME)
+    if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
+        os.remove(SQLITE_FILE_NAME)
 
 class Text(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     text: str
 
-#  engine = create_engine(url=SQLITE_URL, echo=True)
-engine = create_engine(url=SQLITE_URL_IN_MEMORY, echo=True)
+engine = create_engine(url=SQLITE_URL, echo=True)
 
 SQLModel.metadata.create_all(engine)
 
