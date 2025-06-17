@@ -101,16 +101,16 @@ Pusher: {data["pusher"]["name"]}
 
 Date: {data["head_commit"]["timestamp"]}
 
-Added:
+ａｄｄｅｄ
 {file_separator.join([f"  · “{file}”" for file in data["head_commit"]["added"]])}
 
-Removed:
+ｒｅｍｏｖｅｄ
 {file_separator.join([f"  · “{file}”" for file in data["head_commit"]["removed"]]) or "—"}
 
-Modified:
+ｍｏｄｉｆｉｅｄ
 {file_separator.join([f"  · “{file}”" for file in data["head_commit"]["modified"]])}
 
-{data["head_commit"]["url"]}
+Commit: {data["head_commit"]["url"]}
 """
 
     return message
