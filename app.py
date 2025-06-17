@@ -13,6 +13,9 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
+from litestar.exceptions import HTTPException
+from litestar.status_codes import HTTP_403_FORBIDDEN
+
 from litestar.logging import LoggingConfig
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -27,7 +30,7 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
-from sqlmodel import Field, table
+from sqlmodel import Field
 from sqlmodel import Session
 from sqlmodel import SQLModel
 from sqlmodel import create_engine
@@ -99,7 +102,7 @@ async def hello_world() -> dict[str, str]:
 
 @get("/display-dhammapada",
         media_type=MediaType.TEXT,
-        summary="displays Dhammapada",
+        summary="displays dhammapada",
         description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
         )
 async def display_dhammapada(number: param_dhammapada_number = None,
@@ -136,7 +139,9 @@ async def display_dhammapada(number: param_dhammapada_number = None,
     return text
 
 
-@get("/text-to-image")
+@get("/text-to-image",
+        summary="image from text",
+        description="Generates an image from `text`.")
 async def text_to_img(
                       text: param_optional_text,
                       padding: param_padding = 0,
@@ -174,7 +179,7 @@ async def text_to_img(
 
 @get("/cowsay",
      media_type=MediaType.TEXT,
-     summary="cow sayin'",
+     summary="cowsay text",
      description="Cowsays `text`")
 async def get_cowsay(text: param_required_text) -> str:
     cowsaying = cowsay_function(text=text)
@@ -201,12 +206,12 @@ async def get_fortune() -> str:
 
     return fortune_text
 
+
 @get("/specific",
      media_type=MediaType.TEXT,
      summary="displays specific fortune",
      description="Displays a chosen fortune")
 async def get_specific() -> str:
-    #  specific_text = specific_function()
     session = Session(bind=engine)
 
     statement = select(Text)
@@ -219,27 +224,34 @@ async def get_specific() -> str:
 
     return specific_text
 
+
 @post("/webhook-github", include_in_schema=False)
 async def github_webhook_notify(request: Request, data: dict) -> str:
-    signature_header = request.headers.getone("X-Hub-Signature-256")
+    signature_header = request.headers.getone("X-Hub-Signature-256", "=")
     data_bytes = await request.body()
 
     if verify_github_webhook_signature(data_bytes=data_bytes,
-                                       webhook_secret=\
-                                           secret_config.GITHUB_WEBHOOK_SECRET,
+                                       webhook_secret=secret_config\
+                                                      .GITHUB_WEBHOOK_SECRET,
                                        signature=signature_header):
 
         data_dict = data
         message = process_github_webhook(data=data_dict)
 
+        ntfy_client(message=message, title="from /webhook-github",
+                    priority="high")
+
+        return message
+
     else:
         message = "error checking"
 
-    ntfy_client(message=message,
-                title="from /webhook-github",
-                priority="high")
+        ntfy_client(message=message, title="from /webhook-github",
+                    priority="high")
 
-    return message
+        raise HTTPException(detail="Invalid signature",
+                status_code=HTTP_403_FORBIDDEN)
+
 
 
 route_handlers = [
