@@ -3,6 +3,8 @@ import subprocess
 
 from pathlib import Path
 
+from typing import Optional
+
 from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
@@ -24,6 +26,12 @@ from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
+
+from sqlmodel import Field, table
+from sqlmodel import Session
+from sqlmodel import SQLModel
+from sqlmodel import create_engine
+from sqlmodel import select
 
 from functions import get_dhammapada
 from functions import text_to_image
@@ -55,12 +63,31 @@ from aux.params import param_dhammapada_format
 #  DEBUG = True
 DEBUG = False
 
+DB_DELETE_IF_EXISTS = True
+
 SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
+SQLITE_URL_IN_MEMORY = f"sqlite://"
 
+if DB_DELETE_IF_EXISTS and os.path.exists(SQLITE_FILE_NAME):
+    os.remove(SQLITE_FILE_NAME)
 
-@get("/",
-     include_in_schema=False)
+class Text(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    text: str
+
+#  engine = create_engine(url=SQLITE_URL, echo=True)
+engine = create_engine(url=SQLITE_URL_IN_MEMORY, echo=True)
+
+SQLModel.metadata.create_all(engine)
+
+session = Session(bind=engine)
+text1 = Text(text=fortune_function())
+session.add(text1)
+session.commit()
+session.close()
+
+@get("/", include_in_schema=False)
 async def hello_world() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
     return {"hello": "world!"}
@@ -170,9 +197,25 @@ async def get_fortune() -> str:
 
     return fortune_text
 
+@get("/specific",
+     media_type=MediaType.TEXT,
+     summary="displays specific fortune",
+     description="Displays a chosen fortune")
+async def get_specific() -> str:
+    #  specific_text = specific_function()
+    session = Session(bind=engine)
 
-@post("/webhook-github",
-      include_in_schema=False)
+    statement = select(Text)
+    results = session.exec(statement)
+
+    specific_text = "\n".join([f"{result.id}: {result.text}"
+                               for result in results])
+
+    session.close()
+
+    return specific_text
+
+@post("/webhook-github", include_in_schema=False)
 async def github_webhook_notify(request: Request, data: dict) -> str:
     signature_header = request.headers.getone("X-Hub-Signature-256")
     data_bytes = await request.body()
@@ -202,6 +245,7 @@ route_handlers = [
         get_cowsay,
         get_box,
         get_fortune,
+        get_specific,
         github_webhook_notify,
         ]
 
