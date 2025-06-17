@@ -45,6 +45,8 @@ from aux.params import parameter_font_size
 from aux.params import parameter_box
 from aux.params import parameter_cowsay
 from aux.params import parameter_fortune
+from aux.params import parameter_dhammapada_number
+from aux.params import parameter_dhammapada_format
 
 #  DEBUG = True
 DEBUG = False
@@ -64,8 +66,8 @@ async def hello_world() -> dict[str, str]:
         summary="displays Dhammapada",
         description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
         )
-async def display_dhammapada(number: int | None = None,
-                             format: str | None = None,
+async def display_dhammapada(number: parameter_dhammapada_number = None,
+                             format: parameter_dhammapada_format = None,
                              padding: parameter_padding = 22,
                              foreground_color: parameter_foreground_color = "white",
                              background_color: parameter_background_color = "black",

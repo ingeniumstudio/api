@@ -50,12 +50,50 @@ parameter_box = Annotated[bool,
                               description="Bounding box",
                           )]
 
+cowsay_sample = """
+
+```
+ _______
+< hello >
+ -------
+        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||
+```
+"""
+
+param_description_cowsay = """
+Cowsay input `text`
+"""
+
+
 parameter_cowsay = Annotated[bool,
                              Parameter(
-                                 description="Cowsay input `text`",
+                                 description=param_description_cowsay,
                              )]
 
 parameter_fortune = Annotated[bool,
                               Parameter(
-                                  description="Show random fortune; input `text` is ignored if `true`",
+                                  description="Show random fortune; input "
+                                              "`text` is ignored if `true`",
                               )]
+
+parameter_dhammapada_number = Annotated[int | None,
+                                        Parameter(
+                                            description="Dhammapada "
+                                                        "verse number",
+                                            ge=1,
+                                            le=423
+                                        )]
+
+parameter_dhammapada_format = Annotated[str | None,
+                                        Parameter(
+                                            description="Output format; `png`"
+                                                        " for `image/png` or"
+                                                        " empty for"
+                                                        " `text/plain`",
+                                            min_length=0,
+                                            max_length=11
+                                        )]
