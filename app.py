@@ -43,6 +43,7 @@ from functions import ntfy_client
 from functions import box as box_function
 from functions import cowsay as cowsay_function
 from functions import fortune as fortune_function
+from functions import git_pull_repo
 from functions import verify_github_webhook_signature
 from functions import process_github_webhook
 
@@ -252,6 +253,11 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
         ntfy_client(message=message, title="from /webhook-github",
                     priority="high")
+
+        git_message = git_pull_repo(data)
+        if git_message:
+            ntfy_client(message=git_message, title="git pull “reponm”",
+                        priority="default")
 
         return message
 

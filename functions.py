@@ -138,6 +138,21 @@ Commit: {data["head_commit"]["url"]}
     return message
 
 
+def git_pull_repo(data: dict):
+    if data["repository"]["fullname"] == secret_config.REPOSITORY_FULL_NAME\
+            and data["head_commit"]["message"] == "commit":
+
+        args = ["git", "pull"]
+        git_process = subprocess.run(args,
+                                     capture_output=True,
+                                     text=True)
+
+        return git_process.stdout
+
+    else:
+        return None
+
+
 def ntfy_client(message, title, priority):
 
     args = ["/home/u07/.venv/bin/ntfy-client",
