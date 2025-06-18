@@ -1,5 +1,8 @@
 __pycache__/
+
 secret_*
+secrets_*
+*secret*
 
 *.db
 *db*
