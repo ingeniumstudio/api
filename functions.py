@@ -140,7 +140,6 @@ def git_pull_repo(data: dict):
             and data["head_commit"]["message"] == "commit":
 
         args = ["/usr/bin/git", "pull"]
-
         git_process = subprocess.run(args, capture_output=True, text=True)
 
         return git_process.stderr
