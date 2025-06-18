@@ -231,7 +231,7 @@ async def get_specific() -> str:
      media_type=MediaType.HTML,
      summary="template",
      description="Testing templates")
-async def get_index(text: param_required_text) -> str:
+async def get_index(text: param_required_text) -> Template:
     context = {"text": text}
 
     index = Template(template_name="index.html.jinja2", context=context)
@@ -256,7 +256,7 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
         git_message = git_pull_repo(data)
         if git_message:
-            ntfy_client(message=git_message, title="git pull “reponm”",
+            ntfy_client(message=git_message, title="git pull “repm”",
                         priority="default")
 
         return message
