@@ -139,7 +139,7 @@ Commit: {data["head_commit"]["url"]}
 
 
 def git_pull_repo(data: dict):
-    if data["repository"]["fullname"] == secret_config.REPOSITORY_FULL_NAME\
+    if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
             and data["head_commit"]["message"] == "commit":
 
         args = ["git", "pull"]
