@@ -18,8 +18,8 @@ from litestar.status_codes import HTTP_403_FORBIDDEN
 
 from litestar.logging import LoggingConfig
 
-#  from litestar.contrib.jinja import JinjaTemplateEngine
-from litestar.contrib.mako import MakoTemplateEngine
+from litestar.contrib.jinja import JinjaTemplateEngine
+#  from litestar.contrib.mako import MakoTemplateEngine
 from litestar.response import Template
 from litestar.template.config import TemplateConfig
 
@@ -226,6 +226,17 @@ async def get_specific() -> str:
     return specific_text
 
 
+@get("/index",
+     media_type=MediaType.HTML,
+     summary="template",
+     description="Testing templates")
+async def get_index(text: param_required_text) -> str:
+    context = {"text": text}
+
+    index = Template(template_name="index.html.jinja2", context=context)
+    return index
+
+
 @post("/webhook-github", include_in_schema=False)
 async def github_webhook_notify(request: Request, data: dict) -> str:
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")
@@ -263,12 +274,13 @@ route_handlers = [
         get_box,
         get_fortune,
         get_specific,
+        get_index,
         github_webhook_notify,
         ]
 
-
-template_config = TemplateConfig(directory=Path(__file__) / "templates",
-        engine=MakoTemplateEngine.from_config())
+print(Path(__file__))
+template_config = TemplateConfig(directory=Path("templates"),
+        engine=JinjaTemplateEngine)
                                  #  engine=JinjaTemplateEngine)
 
 # https://docs.litestar.dev/2/usage/openapi/schema_generation.html
