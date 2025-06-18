@@ -111,9 +111,6 @@ def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
 
 def process_github_webhook(data):
 
-    #  data = json.loads(json_data)
-    #  #  data = json_data
-
     #  file_separator = ", "
     file_separator = "\n"
 
