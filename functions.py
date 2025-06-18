@@ -148,7 +148,9 @@ def git_pull_repo(data: dict):
 
         git_process = subprocess.run(args, capture_output=True, text=True)
 
-        return "{git_process.stdout}\n---\n{git_process.stderr}"
+        git_message = "{git_process.stdout}\n---\n{git_process.stderr}"
+
+        return git_message
 
     else:
         return None
