@@ -256,7 +256,7 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
         git_message = git_pull_repo(data)
         if git_message:
-            ntfy_client(message=git_message, title="git pull “repo”",
+            ntfy_client(message=git_message, title="git pull 'repo'",
                         priority="default")
 
         return message
