@@ -139,7 +139,12 @@ def git_pull_repo(data: dict):
     if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
             and data["head_commit"]["message"] == "commit":
 
-        args = ["/usr/bin/git", "pull"]
+        #  args = ["/usr/bin/git", "pull"]
+        args = ["sudo",
+                "-u",
+                secret_config.USER,
+                "/usr/bin/git",
+                "pull"]
 
         git_process = subprocess.run(args, capture_output=True, text=True)
 
