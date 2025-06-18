@@ -144,7 +144,7 @@ def git_pull_repo(data: dict):
                                      capture_output=True,
                                      text=True)
 
-        return git_process.stderr
+        return git_process.stderr.encode("utf-8")
 
     else:
         return None
