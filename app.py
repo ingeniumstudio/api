@@ -18,7 +18,8 @@ from litestar.status_codes import HTTP_403_FORBIDDEN
 
 from litestar.logging import LoggingConfig
 
-from litestar.contrib.jinja import JinjaTemplateEngine
+#  from litestar.contrib.jinja import JinjaTemplateEngine
+from litestar.contrib.mako import MakoTemplateEngine
 from litestar.response import Template
 from litestar.template.config import TemplateConfig
 
@@ -267,7 +268,8 @@ route_handlers = [
 
 
 template_config = TemplateConfig(directory=Path(__file__) / "templates",
-                                 engine=JinjaTemplateEngine)
+        engine=MakoTemplateEngine.from_config())
+                                 #  engine=JinjaTemplateEngine)
 
 # https://docs.litestar.dev/2/usage/openapi/schema_generation.html
 # https://docs.litestar.dev/2/reference/app.html
