@@ -115,7 +115,7 @@ class Text(Table, db=DB):
 create_db_tables_sync(Text, if_not_exists=True)
 
 fortune1 = fortune_function()
-text1 = Text.insert(Text(text=fortune1))
+text1 = Text.insert(Text(text=fortune1)).run_sync()
 
 @get("/", include_in_schema=False)
 async def hello_world() -> dict[str, str]:
