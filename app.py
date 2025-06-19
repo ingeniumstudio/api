@@ -126,7 +126,7 @@ async def hello_world() -> dict[str, str]:
 @get("/reboot", include_in_schema=False)
 async def do_reboot() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
-    exit(0)
+    exit(1)
     return {"hello": "world!"}
 
 @get("/display-dhammapada",
