@@ -123,6 +123,12 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
+@get("/reboot", include_in_schema=False)
+async def do_reboot() -> dict[str, str]:
+    """Handler function that returns a greeting dictionary."""
+    exit(0)
+    return {"hello": "world!"}
+
 @get("/display-dhammapada",
         media_type=MediaType.TEXT,
         summary="displays dhammapada",
@@ -299,6 +305,7 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
 route_handlers = [
         hello_world,
+        do_reboot,
         display_dhammapada,
         text_to_img,
         get_cowsay,
