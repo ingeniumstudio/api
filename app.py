@@ -123,11 +123,11 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
-@get("/reboot", include_in_schema=False)
-async def do_reboot() -> dict[str, str]:
-    """Handler function that returns a greeting dictionary."""
-    exit(1)
-    return {"hello": "world!"}
+#  @get("/reboot", include_in_schema=False)
+#  async def do_reboot() -> dict[str, str]:
+#      """Handler function that returns a greeting dictionary."""
+#      secret_config.reboot()
+#      return {"hello": "world!"}
 
 @get("/display-dhammapada",
         media_type=MediaType.TEXT,
