@@ -8,4 +8,7 @@ secrets_*
 *db*
 *.sqlite3
 *sqlite3*
+*sqlite*
 *journal
+
+.ipynb_checkpoints
