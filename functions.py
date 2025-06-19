@@ -15,6 +15,7 @@ import secret_config
 #  if os.path.isfile("secret_config.py"):
 #      import secret_config
 
+FONT = "RobotoMonoNerdFontMono-Regular.ttf"
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
@@ -60,7 +61,8 @@ def text_to_image(text: str,
 
     with Drawing() as draw:
         #  draw.font =  "./font.ttf"
-        draw.font = "RobotoMonoNerdFontMono-Regular.ttf"
+        draw.font = FONT
+        #  draw.font = "RobotoMonoNerdFontMono-Regular.ttf"
         #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
         #  draw.font_size = 16
         draw.font_size = font_size
