@@ -279,7 +279,7 @@ async def on_startup():
     await create_db_tables(Text, if_not_exists=True)
 
     fortune1 = fortune_function()
-    Text.insert(Text(text=fortune1))
+    await Text.insert(Text(text=fortune1))
     #  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
 route_handlers = [
@@ -294,7 +294,6 @@ route_handlers = [
         github_webhook_notify,
         ]
 
-print(Path(__file__))
 template_config = TemplateConfig(directory=Path("templates"),
         engine=JinjaTemplateEngine)
                                  #  engine=JinjaTemplateEngine)
