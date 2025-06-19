@@ -117,17 +117,12 @@ create_db_tables_sync(Text, if_not_exists=True)
 fortune1 = fortune_function()
 text1 = Text.insert(Text(text=fortune1)).run_sync()
 
+
 @get("/", include_in_schema=False)
 async def hello_world() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
     return {"hello": "world!"}
 
-
-#  @get("/reboot", include_in_schema=False)
-#  async def do_reboot() -> dict[str, str]:
-#      """Handler function that returns a greeting dictionary."""
-#      secret_config.reboot()
-#      return {"hello": "world!"}
 
 @get("/display-dhammapada",
         media_type=MediaType.TEXT,
@@ -244,16 +239,6 @@ async def get_specific() -> str:
     texts = await Text.select()
     specific_text = "\n\n".join([f"{text['id']}: {text['text']}"
                                  for text in texts])
-    #  session = Session(bind=engine)
-    #
-    #  statement = select(Text)
-    #  results = session.exec(statement)
-    #
-    #  specific_text = "\n\n".join([f"{result.id}: {result.text}"
-    #                             for result in results])
-    #
-    #  session.close()
-    #  specific_text = "pass"
 
     return specific_text
 
@@ -305,7 +290,6 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
 route_handlers = [
         hello_world,
-        do_reboot,
         display_dhammapada,
         text_to_img,
         get_cowsay,
