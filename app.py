@@ -102,6 +102,11 @@ DEBUG = False
 
 SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 
+DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
+
+if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
+    os.remove(SQLITE_FILE_NAME)
+
 DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 
 class Text(Table, db=DB):
