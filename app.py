@@ -3,8 +3,6 @@ import subprocess
 
 from pathlib import Path
 
-from typing import Optional
-
 from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
@@ -16,10 +14,7 @@ from litestar.datastructures import Headers
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_403_FORBIDDEN
 
-from litestar.logging import LoggingConfig
-
 from litestar.contrib.jinja import JinjaTemplateEngine
-#  from litestar.contrib.mako import MakoTemplateEngine
 from litestar.response import Template
 from litestar.template.config import TemplateConfig
 
@@ -34,12 +29,6 @@ from litestar.openapi.plugins import YamlRenderPlugin
 from piccolo.engine.sqlite import SQLiteEngine
 from piccolo.table import Table, create_db_tables, create_db_tables_sync
 from piccolo.columns import Varchar
-
-from sqlmodel import Field
-from sqlmodel import Session
-from sqlmodel import SQLModel
-from sqlmodel import create_engine
-from sqlmodel import select
 
 from functions import get_dhammapada
 from functions import text_to_image
@@ -112,10 +101,10 @@ DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 class Text(Table, db=DB):
     text = Varchar()
 
-create_db_tables_sync(Text, if_not_exists=True)
-
-fortune1 = fortune_function()
-text1 = Text.insert(Text(text=fortune1)).run_sync()
+#  create_db_tables_sync(Text, if_not_exists=True)
+#
+#  fortune1 = fortune_function()
+#  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
 
 @get("/", include_in_schema=False)
@@ -286,7 +275,12 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
         raise HTTPException(detail="Invalid signature",
                 status_code=HTTP_403_FORBIDDEN)
 
+async def on_startup():
+    await create_db_tables(Text, if_not_exists=True)
 
+    fortune1 = fortune_function()
+    Text.insert(Text(text=fortune1))
+    #  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
 route_handlers = [
         hello_world,
