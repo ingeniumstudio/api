@@ -240,7 +240,7 @@ async def get_specific() -> str:
     #                             for result in results])
     #
     #  session.close()
-    specific_text = "pass"
+    #  specific_text = "pass"
 
     return specific_text
 
