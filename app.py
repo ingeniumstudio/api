@@ -31,6 +31,10 @@ from litestar.openapi.plugins import StoplightRenderPlugin
 from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
+from piccolo.engine.sqlite import SQLiteEngine
+from piccolo.table import Table
+from piccolo.columns import Varchar
+
 from sqlmodel import Field
 from sqlmodel import Session
 from sqlmodel import SQLModel
@@ -68,33 +72,43 @@ from aux.params import param_dhammapada_format
 #  DEBUG = True
 DEBUG = False
 
-#  DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
-DB_FILE_DELETE_IF_EXISTS = False  # recreate db file
-#  DB_IN_MEMORY = True
-DB_IN_MEMORY = False
+#  #  DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
+#  DB_FILE_DELETE_IF_EXISTS = False  # recreate db file
+#  #  DB_IN_MEMORY = True
+#  DB_IN_MEMORY = False
+#
+#  if DB_IN_MEMORY:
+#      SQLITE_URL = f"sqlite://"  # in-memory
+#  else:
+#      SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
+#      SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
+#
+#      if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
+#          os.remove(SQLITE_FILE_NAME)
+#
+#  class Text(SQLModel, table=True):
+#      id: Optional[int] = Field(default=None, primary_key=True)
+#      text: str
+#
+#  engine = create_engine(url=SQLITE_URL, echo=True)
+#
+#  SQLModel.metadata.create_all(engine)
 
-if DB_IN_MEMORY:
-    SQLITE_URL = f"sqlite://"  # in-memory
-else:
-    SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
-    SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
+#  session = Session(bind=engine)
+#  text1 = Text(text=fortune_function())
+#  session.add(text1)
+#  session.commit()
+#  session.close()
 
-    if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
-        os.remove(SQLITE_FILE_NAME)
+SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 
-class Text(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    text: str
+DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 
-engine = create_engine(url=SQLITE_URL, echo=True)
+class Text(Table, db=DB):
+    text = Varchar()
 
-SQLModel.metadata.create_all(engine)
-
-session = Session(bind=engine)
-text1 = Text(text=fortune_function())
-session.add(text1)
-session.commit()
-session.close()
+fortune1 = fortune_function()
+text1 = Text.insert(Text(text=fortune1))
 
 @get("/", include_in_schema=False)
 async def hello_world() -> dict[str, str]:
@@ -214,15 +228,19 @@ async def get_fortune() -> str:
      summary="displays specific fortune",
      description="Displays a chosen fortune")
 async def get_specific() -> str:
-    session = Session(bind=engine)
-
-    statement = select(Text)
-    results = session.exec(statement)
-
-    specific_text = "\n\n".join([f"{result.id}: {result.text}"
-                               for result in results])
-
-    session.close()
+    texts = await Text.select()
+    specific_text = "\n\n".join([f"{text['id']}: {text['text']}"
+                                 for text in texts])
+    #  session = Session(bind=engine)
+    #
+    #  statement = select(Text)
+    #  results = session.exec(statement)
+    #
+    #  specific_text = "\n\n".join([f"{result.id}: {result.text}"
+    #                             for result in results])
+    #
+    #  session.close()
+    specific_text = "pass"
 
     return specific_text
 
