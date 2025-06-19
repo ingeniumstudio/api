@@ -32,7 +32,7 @@ from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
 from piccolo.engine.sqlite import SQLiteEngine
-from piccolo.table import Table
+from piccolo.table import Table, create_db_tables, create_db_tables_sync
 from piccolo.columns import Varchar
 
 from sqlmodel import Field
@@ -112,8 +112,10 @@ DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 class Text(Table, db=DB):
     text = Varchar()
 
+create_db_tables_sync(Text, if_not_exists=True)
+
 fortune1 = fortune_function()
-text1 = Text.insert(Text(text=fortune1)).run_sync()
+text1 = Text.insert(Text(text=fortune1))
 
 @get("/", include_in_schema=False)
 async def hello_world() -> dict[str, str]:
