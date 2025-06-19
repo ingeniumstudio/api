@@ -91,14 +91,11 @@ param_dhammapada_number = Annotated[int | None,
                                             le=423
                                         )]
 
-dhammapada_formats = Literal["txt", "png"]  # FIXME
+dhammapada_formats = Literal["txt", "png"]
 param_dhammapada_format = Annotated[dhammapada_formats | None,
-#  param_dhammapada_format = Annotated[str | None,
                                         Parameter(
                                             description="Output format; `png`"
                                                         " for `image/png` or"
                                                         " empty for"
                                                         " `text/plain`",
-                                            #  min_length=0,
-                                            #  max_length=11
                                         )]
