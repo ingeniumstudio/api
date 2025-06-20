@@ -282,6 +282,10 @@ async def on_startup():
     await Text.insert(Text(text=fortune1))
     #  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
+@get("/reboot")
+async def do_reboot() -> str:
+    return secret_config.reboot()
+
 route_handlers = [
         hello_world,
         display_dhammapada,
@@ -292,6 +296,7 @@ route_handlers = [
         get_specific,
         get_index,
         github_webhook_notify,
+        do_reboot,
         ]
 
 template_config = TemplateConfig(directory=Path("templates"),
