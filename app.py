@@ -317,5 +317,6 @@ app = Litestar(route_handlers=route_handlers,
                        YamlRenderPlugin()
                        ],
                    ),
+               on_startup=[on_startup],
                pdb_on_exception=DEBUG
                )
