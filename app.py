@@ -11,7 +11,16 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
+from litestar.middleware import (
+        AbstractAuthenticationMiddleware,
+        AuthenticationResult,
+        DefineMiddleware,
+        )
+
+from litestar.connection import ASGIConnection
+
 from litestar.exceptions import HTTPException
+from litestar.exceptions import NotAuthorizedException
 from litestar.status_codes import HTTP_403_FORBIDDEN
 
 from litestar.contrib.jinja import JinjaTemplateEngine
@@ -105,6 +114,20 @@ class Text(Table, db=DB):
 #
 #  fortune1 = fortune_function()
 #  text1 = Text.insert(Text(text=fortune1)).run_sync()
+
+class YokeAuthMiddleware(AbstractAuthenticationMiddleware):
+    async def authenticate_request(self, connection: ASGIConnection) -> AuthenticationResult:
+        #  return await super().authenticate_request(connection)
+        auth_header = connection.headers.get(secret_config.API_KEY_HEADER)
+        if not auth_header:
+            raise NotAuthorizedException()
+
+        auth = secret_config.check_auth(header=auth_header)
+
+        if not auth:
+            raise NotAuthorizedException
+
+        return AuthenticationResult(**auth)
 
 
 @get("/", include_in_schema=False)
@@ -286,6 +309,8 @@ async def on_startup():
 async def do_reboot() -> str:
     return secret_config.reboot()
 
+auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude=["/display-dhammapada"])
+
 route_handlers = [
         hello_world,
         display_dhammapada,
@@ -307,6 +332,7 @@ template_config = TemplateConfig(directory=Path("templates"),
 # https://docs.litestar.dev/2/reference/app.html
 
 app = Litestar(route_handlers=route_handlers,
+               middleware=[auth_mw],
                logging_config=logging_config,
                template_config=template_config,
                openapi_config=OpenAPIConfig(
