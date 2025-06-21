@@ -307,7 +307,7 @@ async def on_shutdown():
     message = f"pids: {', '.join(pid_list)}\n\n{fortune}"
     ntfy_client(message=message, title="server stopping", priority="low")
 
-auth_mw = DefineMiddleware(YokeAuthMiddleware)
+auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude="schema")
 
 route_handlers = [
         hello_world,
@@ -324,7 +324,6 @@ route_handlers = [
 
 template_config = TemplateConfig(directory=Path("templates"),
         engine=JinjaTemplateEngine)
-                                 #  engine=JinjaTemplateEngine)
 
 # https://docs.litestar.dev/2/usage/openapi/schema_generation.html
 # https://docs.litestar.dev/2/reference/app.html
