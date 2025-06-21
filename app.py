@@ -97,7 +97,7 @@ DEBUG = False
 #  session.add(text1)
 #  session.commit()
 #  session.close()
-
+noauth = {"exclude_from_auth": True}
 SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 
 DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
@@ -140,6 +140,7 @@ async def hello_world() -> dict[str, str]:
         media_type=MediaType.TEXT,
         summary="displays dhammapada",
         description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
+        **noauth,
         )
 async def display_dhammapada(number: param_dhammapada_number = None,
                              format: param_dhammapada_format = None,
@@ -177,7 +178,9 @@ async def display_dhammapada(number: param_dhammapada_number = None,
 
 @get("/text-to-image",
         summary="image from text",
-        description="Generates an image from `text`.")
+        description="Generates an image from `text`.",
+        **noauth,
+        )
 async def text_to_img(
                       text: param_optional_text,
                       padding: param_padding = 0,
@@ -216,7 +219,9 @@ async def text_to_img(
 @get("/cowsay",
      media_type=MediaType.TEXT,
      summary="cowsay text",
-     description="Cowsays `text`")
+     description="Cowsays `text`",
+     **noauth,
+     )
 async def get_cowsay(text: param_required_text) -> str:
     cowsaying = cowsay_function(text=text)
 
@@ -226,7 +231,9 @@ async def get_cowsay(text: param_required_text) -> str:
 @get("/box",
      media_type=MediaType.TEXT,
      summary="text inside box",
-     description="Displays `text` inside box")
+     description="Displays `text` inside box",
+     **noauth,
+     )
 async def get_box(text: param_required_text) -> str:
     text_box = box_function(text=text)
 
@@ -236,7 +243,9 @@ async def get_box(text: param_required_text) -> str:
 @get("/fortune",
      media_type=MediaType.TEXT,
      summary="displays fortune",
-     description="Displays a random fortune")
+     description="Displays a random fortune",
+     **noauth,
+     )
 async def get_fortune() -> str:
     fortune_text = fortune_function()
 
@@ -246,7 +255,9 @@ async def get_fortune() -> str:
 @get("/specific",
      media_type=MediaType.TEXT,
      summary="displays specific fortune",
-     description="Displays a chosen fortune")
+     description="Displays a chosen fortune",
+     **noauth,
+     )
 async def get_specific() -> str:
     texts = await Text.select()
     specific_text = "\n\n".join([f"{text['id']}: {text['text']}"
@@ -258,7 +269,8 @@ async def get_specific() -> str:
 @get("/index",
      media_type=MediaType.HTML,
      summary="template",
-     description="Testing templates")
+     description="Testing templates",
+     **noauth)
 async def get_index(text: param_required_text) -> Template:
     context = {"text": text}
 
@@ -266,7 +278,7 @@ async def get_index(text: param_required_text) -> Template:
     return index
 
 
-@post("/webhook-github", include_in_schema=False)
+@post("/webhook-github", include_in_schema=False, **noauth)
 async def github_webhook_notify(request: Request, data: dict) -> str:
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")
     data_bytes = await request.body()
@@ -298,6 +310,10 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
         raise HTTPException(detail="Invalid signature",
                 status_code=HTTP_403_FORBIDDEN)
 
+@get("/reboot")
+async def do_reboot() -> str:
+    return secret_config.reboot()
+
 async def on_startup():
     await create_db_tables(Text, if_not_exists=True)
 
@@ -305,11 +321,8 @@ async def on_startup():
     await Text.insert(Text(text=fortune1))
     #  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
-@get("/reboot")
-async def do_reboot() -> str:
-    return secret_config.reboot()
-
-auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude=["/display-dhammapada"])
+#  auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude=["/display-dhammapada"])
+auth_mw = DefineMiddleware(YokeAuthMiddleware)
 
 route_handlers = [
         hello_world,
