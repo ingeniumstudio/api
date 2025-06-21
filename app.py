@@ -36,7 +36,7 @@ from litestar.openapi.plugins import SwaggerRenderPlugin
 from litestar.openapi.plugins import YamlRenderPlugin
 
 from piccolo.engine.sqlite import SQLiteEngine
-from piccolo.table import Table, create_db_tables, create_db_tables_sync
+from piccolo.table import Table, create_db_tables
 from piccolo.columns import Varchar
 
 from functions import get_dhammapada
@@ -71,34 +71,8 @@ from aux.params import param_dhammapada_format
 #  DEBUG = True
 DEBUG = False
 
-#  #  DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
-#  DB_FILE_DELETE_IF_EXISTS = False  # recreate db file
-#  #  DB_IN_MEMORY = True
-#  DB_IN_MEMORY = False
-#
-#  if DB_IN_MEMORY:
-#      SQLITE_URL = f"sqlite://"  # in-memory
-#  else:
-#      SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
-#      SQLITE_URL = f"sqlite:///{SQLITE_FILE_NAME}"
-#
-#      if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
-#          os.remove(SQLITE_FILE_NAME)
-#
-#  class Text(SQLModel, table=True):
-#      id: Optional[int] = Field(default=None, primary_key=True)
-#      text: str
-#
-#  engine = create_engine(url=SQLITE_URL, echo=True)
-#
-#  SQLModel.metadata.create_all(engine)
-
-#  session = Session(bind=engine)
-#  text1 = Text(text=fortune_function())
-#  session.add(text1)
-#  session.commit()
-#  session.close()
 noauth = {"exclude_from_auth": True}
+
 SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
 
 DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
@@ -108,17 +82,13 @@ if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
 
 DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 
+
 class Text(Table, db=DB):
     text = Varchar()
 
-#  create_db_tables_sync(Text, if_not_exists=True)
-#
-#  fortune1 = fortune_function()
-#  text1 = Text.insert(Text(text=fortune1)).run_sync()
 
 class YokeAuthMiddleware(AbstractAuthenticationMiddleware):
     async def authenticate_request(self, connection: ASGIConnection) -> AuthenticationResult:
-        #  return await super().authenticate_request(connection)
         auth_header = connection.headers.get(secret_config.API_KEY_HEADER)
         if not auth_header:
             raise NotAuthorizedException()
@@ -126,7 +96,7 @@ class YokeAuthMiddleware(AbstractAuthenticationMiddleware):
         auth = secret_config.check_auth(header=auth_header)
 
         if not auth:
-            raise NotAuthorizedException
+            raise NotAuthorizedException()
 
         return AuthenticationResult(**auth)
 
