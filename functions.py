@@ -169,6 +169,8 @@ def ntfy_client(message, title, priority):
             title,
             "--priority",
             priority,
+            "--icon",
+            secret_config.NTFY_ICON,
             ]
     #  args = ["ntfy-cli.py", "--message", data]
     subprocess.run(args)
@@ -252,3 +254,14 @@ def fortune():
 
     #  return fortune_process.stdout
     return fortune_process.stdout.strip("\n")
+
+
+def get_pids_in_port(port: int | str = 8000):
+    args_ss = ["sudo", "ss", "-lptn", f"sport = :{port}"]
+    ss_process = subprocess.run(args_ss, capture_output=True, text=True)
+
+    pid_list = [pid.split('=')[1] for pid in ss_process.stdout.split(',')
+                if pid.startswith("pid=")]
+
+    return pid_list
+

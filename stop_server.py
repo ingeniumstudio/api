@@ -2,22 +2,24 @@
 
 import subprocess
 
+from functions import get_pids_in_port
+from functions import ntfy_client
+
+SIGNAL = "SIGTERM"
 
 def do_reboot():
-    args_ss = ["sudo", "ss", "-lptn", "sport = :8000"]
-    args_kill = ["sudo", "kill", "-9"]
+    args_kill = ["sudo", "kill", f"-{SIGNAL}"]
+    #  args_kill = ["sudo", "kill", "-9"]
 
-    ss_process = subprocess.run(args_ss, capture_output=True, text=True)
-
-    pid_list = [pid.split('=')[1] for pid in ss_process.stdout.split(',')
-                if pid.startswith("pid=")]
-
-    #  for pid in sorted(pid_list):  # lesser pid first in list
-    #      subprocess.run(args_kill + [pid])
-    #
-    #  return ", ".join(pid_list)
+    pid_list = get_pids_in_port(port=8000)
 
     subprocess.run(args_kill + pid_list)
 
+    return pid_list
+
 if __name__ == "__main__":
-    do_reboot()
+    pid_list = do_reboot()
+    pids = ", ".join(pid_list)
+    message = f"pids: {pids}"
+    print(message)
+    ntfy_client(message=message, title="server stopped", priority="low")

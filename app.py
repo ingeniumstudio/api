@@ -48,6 +48,7 @@ from functions import fortune as fortune_function
 from functions import git_pull_repo
 from functions import verify_github_webhook_signature
 from functions import process_github_webhook
+from functions import get_pids_in_port
 
 import secret_config
 
@@ -310,18 +311,32 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
         raise HTTPException(detail="Invalid signature",
                 status_code=HTTP_403_FORBIDDEN)
 
+
 @get("/reboot")
 async def do_reboot() -> str:
     return secret_config.reboot()
 
+
 async def on_startup():
     await create_db_tables(Text, if_not_exists=True)
 
-    fortune1 = fortune_function()
-    await Text.insert(Text(text=fortune1))
-    #  text1 = Text.insert(Text(text=fortune1)).run_sync()
+    fortune = fortune_function()
+    await Text.insert(Text(text=fortune))
 
-#  auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude=["/display-dhammapada"])
+    pid_list = get_pids_in_port(port=8000)
+    message = f"pids: {', '.join(pid_list)}\n\n{fortune}"
+    ntfy_client(message=message, title="server started", priority="low")
+
+
+async def on_shutdown():
+    texts = await Text.select()
+    fortune = "\n\n".join([f"{text['id']}: {text['text']}"
+                                 for text in texts])
+
+    pid_list = get_pids_in_port(port=8000)
+    message = f"pids: {', '.join(pid_list)}\n\n{fortune}"
+    ntfy_client(message=message, title="server stopping", priority="low")
+
 auth_mw = DefineMiddleware(YokeAuthMiddleware)
 
 route_handlers = [
@@ -362,5 +377,6 @@ app = Litestar(route_handlers=route_handlers,
                        ],
                    ),
                on_startup=[on_startup],
+               on_shutdown=[on_shutdown],
                pdb_on_exception=DEBUG
                )
