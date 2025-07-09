@@ -287,7 +287,11 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
 @get("/reboot")
 async def do_reboot() -> str:
-    return secret_config.reboot()
+    import stop_server
+    stop_server.do_reboot()
+    #  return secret_config.reboot()
+    return ""
+
 
 
 #  async def on_startup():
