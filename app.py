@@ -3,10 +3,10 @@ from pathlib import Path
 from litestar import Litestar
 
 from litestar.middleware import (
-        AbstractAuthenticationMiddleware,
-        AuthenticationResult,
-        DefineMiddleware,
-        )
+    AbstractAuthenticationMiddleware,
+    AuthenticationResult,
+    DefineMiddleware,
+)
 
 from litestar.connection import ASGIConnection
 
@@ -16,18 +16,18 @@ from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.template.config import TemplateConfig
 
 from litestar.openapi.config import OpenAPIConfig
-from litestar.openapi.plugins import RapidocRenderPlugin
-from litestar.openapi.plugins import RedocRenderPlugin
-from litestar.openapi.plugins import ScalarRenderPlugin
-from litestar.openapi.plugins import StoplightRenderPlugin
-from litestar.openapi.plugins import SwaggerRenderPlugin
-from litestar.openapi.plugins import YamlRenderPlugin
+from litestar.openapi.plugins import (
+    RapidocRenderPlugin,
+	RedocRenderPlugin,
+	ScalarRenderPlugin,
+	StoplightRenderPlugin,
+	SwaggerRenderPlugin,
+	YamlRenderPlugin,
+)
 
 from functions import ntfy_client
 from functions import fortune as fortune_function
 from functions import get_pids_in_port
-
-import secret_config
 
 from aux.logging import logging_config
 
@@ -35,18 +35,19 @@ from database import create_db_tables
 from database import Text
 
 from routes import (
-        hello_world,
-        display_dhammapada,
-        text_to_img,
-        get_cowsay,
-        get_box,
-        get_fortune,
-        get_specific,
-        get_index,
-        github_webhook_notify,
-        reboot,
-        )
+    hello_world,
+    display_dhammapada,
+    text_to_img,
+    get_cowsay,
+    get_box,
+    get_fortune,
+    get_specific,
+    get_index,
+    github_webhook_notify,
+    reboot,
+)
 
+import secret_config
 
 #  DEBUG = True
 DEBUG = False
@@ -55,7 +56,9 @@ noauth = {"exclude_from_auth": True}
 
 
 class YokeAuthMiddleware(AbstractAuthenticationMiddleware):
-    async def authenticate_request(self, connection: ASGIConnection) -> AuthenticationResult:
+    async def authenticate_request(self, connection: ASGIConnection)\
+                  -> AuthenticationResult:
+
         auth_header = connection.headers.get(secret_config.API_KEY_HEADER)
         if not auth_header:
             raise NotAuthorizedException()
