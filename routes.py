@@ -46,6 +46,7 @@ from functions import git_pull_repo
 from functions import verify_github_webhook_signature
 from functions import process_github_webhook
 from functions import get_pids_in_port
+from functions import do_reboot
 
 import secret_config
 
@@ -286,10 +287,9 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
 
 @get("/reboot")
-async def do_reboot() -> str:
-    import stop_server
-    stop_server.do_reboot()
-    #  return secret_config.reboot()
+async def reboot() -> str:
+    do_reboot()
+
     return ""
 
 

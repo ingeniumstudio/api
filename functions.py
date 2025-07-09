@@ -265,3 +265,17 @@ def get_pids_in_port(port: int | str = 8000):
 
     return pid_list
 
+
+
+def do_reboot():
+    SIGNAL = "SIGTERM"
+
+    args_kill = ["sudo", "kill", f"-{SIGNAL}"]
+    #  args_kill = ["sudo", "kill", "-9"]
+
+    pid_list = get_pids_in_port(port=8000)
+
+    subprocess.run(args_kill + pid_list)
+
+    return pid_list
+

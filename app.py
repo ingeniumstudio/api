@@ -334,7 +334,7 @@ route_handlers = [
         get_specific,
         get_index,
         github_webhook_notify,
-        do_reboot,
+        reboot,
         ]
 
 template_config = TemplateConfig(directory=Path("templates"),
