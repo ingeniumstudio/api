@@ -66,7 +66,7 @@ from routes import (
         get_specific,
         get_index,
         github_webhook_notify,
-        do_reboot,
+        reboot,
         )
 
 #  from aux.operations import TextToImageOperation
