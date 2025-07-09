@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import subprocess
 
@@ -17,9 +17,9 @@ def do_reboot():
 
     return pid_list
 
-if __name__ == "__main__":
-    pid_list = do_reboot()
-    pids = ", ".join(pid_list)
-    message = f"pids: {pids}"
-    print(message)
-    ntfy_client(message=message, title="server stopped", priority="low")
+#  if __name__ == "__main__":
+pid_list = do_reboot()
+pids = ", ".join(pid_list)
+message = f"pids: {pids}"
+print(message)
+ntfy_client(message=message, title="server stopped", priority="low")
