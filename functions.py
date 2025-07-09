@@ -15,7 +15,8 @@ import secret_config
 #  if os.path.isfile("secret_config.py"):
 #      import secret_config
 
-FONT = "RobotoMonoNerdFontMono-Regular.ttf"
+DEFAULT_FONT = "RobotoMonoNerdFontMono-Regular.ttf"
+DEFAULT_FONT_SIZE = 16
 
 def get_dhammapada(number: int | None = None):
     DHAMMAPADA_JSON_FILEPATH = "./dhammapada.json"
@@ -52,21 +53,13 @@ def text_to_image(text: str,
                   padding: int = 0,
                   foreground_color: str = "white",
                   background_color: str= "black",
-                  font_size: int = 16):
+                  font_size: int = DEFAULT_FONT_SIZE):
 
     png_bytes = bytes()
-    #  text = bytes(text, "utf-8").decode("unicode_escape")
-    #text = bytes(text, "utf-8")#.decode("utf-8")
-    #  text = text.replace('\\n', '\n')
 
     with Drawing() as draw:
-        #  draw.font =  "./font.ttf"
-        draw.font = FONT
-        #  draw.font = "RobotoMonoNerdFontMono-Regular.ttf"
-        #  draw.font =  "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf"
-        #  draw.font_size = 16
+        draw.font = DEFAULT_FONT
         draw.font_size = font_size
-        #  draw.fill_color = Color("white")
         draw.fill_color = Color(foreground_color)
 
         # Create a temporary image to measure the text
@@ -75,14 +68,12 @@ def text_to_image(text: str,
             text_width = int(metrics.text_width)
             text_height = int(metrics.text_height)
 
-        #  padding = 10
         img_width = text_width + padding * 2
         img_height = text_height + padding * 2
 
         with Image(width=img_width,
                    height=img_height,
                    background=Color(background_color)) as img:
-                   #  background=Color('black')) as img:
 
             draw.text(padding, int(img_height / 2 - text_height / 2 + metrics.ascender), text)
 
@@ -104,10 +95,6 @@ def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
                              msg=data_bytes,
                              digestmod=hashlib.sha256).hexdigest()
 
-    #  if not hmac.compare_digest(computed_hash, provided_hash):
-    #      return "error checking"
-    #  else:
-    #      return "checking ok"
     return hmac.compare_digest(computed_hash, provided_hash)
 
 
