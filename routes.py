@@ -1,5 +1,3 @@
-import os
-
 from litestar import MediaType
 from litestar import Response
 from litestar import Request
@@ -7,42 +5,41 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
-
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_403_FORBIDDEN
 
 from litestar.response import Template
 
-from functions import get_dhammapada
-from functions import text_to_image
-from functions import ntfy_client
-from functions import box as box_function
-from functions import cowsay as cowsay_function
-from functions import fortune as fortune_function
-from functions import git_pull_repo
-from functions import verify_github_webhook_signature
-from functions import process_github_webhook
-from functions import get_pids_in_port
-from functions import do_reboot
+from functions import (
+    get_dhammapada,
+    text_to_image,
+    ntfy_client,
+    box as box_function,
+    cowsay as cowsay_function,
+    fortune as fortune_function,
+    git_pull_repo,
+    verify_github_webhook_signature,
+    process_github_webhook,
+    do_reboot,
+)
 
-import secret_config
-
-from aux.logging import logging_config
-
-
-from aux.params import param_optional_text
-from aux.params import param_required_text
-from aux.params import param_padding
-from aux.params import param_foreground_color
-from aux.params import param_background_color
-from aux.params import param_font_size
-from aux.params import param_box
-from aux.params import param_cowsay
-from aux.params import param_fortune
-from aux.params import param_dhammapada_number
-from aux.params import param_dhammapada_format
+from aux.params import (
+    param_optional_text,
+    param_required_text,
+    param_padding,
+    param_foreground_color,
+    param_background_color,
+    param_font_size,
+    param_box,
+    param_cowsay,
+    param_fortune,
+    param_dhammapada_number,
+    param_dhammapada_format,
+)
 
 from database import Text
+
+import secret_config
 
 #  DEBUG = True
 DEBUG = False
@@ -57,11 +54,11 @@ async def hello_world() -> dict[str, str]:
 
 
 @get("/display-dhammapada",
-        media_type=MediaType.TEXT,
-        summary="displays dhammapada",
-        description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
-        **noauth,
-        )
+     media_type=MediaType.TEXT,
+     summary="displays dhammapada",
+     description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
+     **noauth,  #pyright: ignore
+     )
 async def display_dhammapada(number: param_dhammapada_number = None,
                              format: param_dhammapada_format = None,
                              padding: param_padding = 22,
@@ -97,10 +94,10 @@ async def display_dhammapada(number: param_dhammapada_number = None,
 
 
 @get("/text-to-image",
-        summary="image from text",
-        description="Generates an image from `text`.",
-        **noauth,
-        )
+     summary="image from text",
+     description="Generates an image from `text`.",
+     **noauth,  #pyright: ignore
+     )
 async def text_to_img(
                       text: param_optional_text,
                       padding: param_padding = 0,
@@ -140,7 +137,7 @@ async def text_to_img(
      media_type=MediaType.TEXT,
      summary="cowsay text",
      description="Cowsays `text`",
-     **noauth,
+     **noauth,  #pyright: ignore
      )
 async def get_cowsay(text: param_required_text) -> str:
     cowsaying = cowsay_function(text=text)
@@ -152,7 +149,7 @@ async def get_cowsay(text: param_required_text) -> str:
      media_type=MediaType.TEXT,
      summary="text inside box",
      description="Displays `text` inside box",
-     **noauth,
+     **noauth,  #pyright: ignore
      )
 async def get_box(text: param_required_text) -> str:
     text_box = box_function(text=text)
@@ -164,7 +161,7 @@ async def get_box(text: param_required_text) -> str:
      media_type=MediaType.TEXT,
      summary="displays fortune",
      description="Displays a random fortune",
-     **noauth,
+     **noauth,  #pyright: ignore
      )
 async def get_fortune() -> str:
     fortune_text = fortune_function()
@@ -176,7 +173,7 @@ async def get_fortune() -> str:
      media_type=MediaType.TEXT,
      summary="displays specific fortune",
      description="Displays a chosen fortune",
-     **noauth,
+     **noauth,  #pyright: ignore
      )
 async def get_specific() -> str:
     texts = await Text.select()
@@ -190,7 +187,8 @@ async def get_specific() -> str:
      media_type=MediaType.HTML,
      summary="template",
      description="Testing templates",
-     **noauth)
+     **noauth,  #pyright: ignore
+     )
 async def get_index(text: param_required_text) -> Template:
     context = {"text": text}
 
@@ -198,7 +196,10 @@ async def get_index(text: param_required_text) -> Template:
     return index
 
 
-@post("/webhook-github", include_in_schema=False, **noauth)
+@post("/webhook-github",
+      include_in_schema=False,
+      **noauth,  #pyright: ignore
+      )
 async def github_webhook_notify(request: Request, data: dict) -> str:
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")
     data_bytes = await request.body()
@@ -231,7 +232,8 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
                 status_code=HTTP_403_FORBIDDEN)
 
 
-@get("/reboot")
+@get("/reboot"
+     )
 async def reboot() -> str:
     do_reboot()
 
