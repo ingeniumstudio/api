@@ -1,9 +1,5 @@
 import os
-#  import subprocess
 
-#  from pathlib import Path
-
-#  from litestar import Litestar
 from litestar import MediaType
 from litestar import Response
 from litestar import Request
@@ -11,30 +7,11 @@ from litestar import get
 from litestar import post
 from litestar.datastructures import Headers
 
-#  from litestar.middleware import (
-#          AbstractAuthenticationMiddleware,
-#          AuthenticationResult,
-#          DefineMiddleware,
-#          )
-
-#  from litestar.connection import ASGIConnection
 
 from litestar.exceptions import HTTPException
-#  from litestar.exceptions import NotAuthorizedException
 from litestar.status_codes import HTTP_403_FORBIDDEN
 
-#  from litestar.contrib.jinja import JinjaTemplateEngine
-#  from litestar.template.config import TemplateConfig
 from litestar.response import Template
-
-#  from litestar.openapi.config import OpenAPIConfig
-#  from litestar.openapi.plugins import RapidocRenderPlugin
-#  from litestar.openapi.plugins import RedocRenderPlugin
-#  from litestar.openapi.plugins import ScalarRenderPlugin
-#  from litestar.openapi.plugins import StoplightRenderPlugin
-#  from litestar.openapi.plugins import SwaggerRenderPlugin
-#  from litestar.openapi.plugins import YamlRenderPlugin
-
 
 from functions import get_dhammapada
 from functions import text_to_image
@@ -52,7 +29,6 @@ import secret_config
 
 from aux.logging import logging_config
 
-#  from aux.operations import TextToImageOperation
 
 from aux.params import param_optional_text
 from aux.params import param_required_text
@@ -66,43 +42,12 @@ from aux.params import param_fortune
 from aux.params import param_dhammapada_number
 from aux.params import param_dhammapada_format
 
+from database import Text
+
 #  DEBUG = True
 DEBUG = False
 
 noauth = {"exclude_from_auth": True}
-
-#  from piccolo.engine.sqlite import SQLiteEngine
-#  from piccolo.table import Table, create_db_tables
-#  from piccolo.columns import Varchar
-#
-#  SQLITE_FILE_NAME = secret_config.SQLITE_FILE_NAME
-#
-#  DB_FILE_DELETE_IF_EXISTS = True  # recreate db file
-#
-#  if DB_FILE_DELETE_IF_EXISTS and os.path.isfile(SQLITE_FILE_NAME):
-#      os.remove(SQLITE_FILE_NAME)
-#
-#  DB = SQLiteEngine(path=SQLITE_FILE_NAME)
-#
-#
-#  class Text(Table, db=DB):
-#      text = Varchar()
-
-from database import Text
-
-#
-#  class YokeAuthMiddleware(AbstractAuthenticationMiddleware):
-#      async def authenticate_request(self, connection: ASGIConnection) -> AuthenticationResult:
-#          auth_header = connection.headers.get(secret_config.API_KEY_HEADER)
-#          if not auth_header:
-#              raise NotAuthorizedException()
-#
-#          auth = secret_config.check_auth(header=auth_header)
-#
-#          if not auth:
-#              raise NotAuthorizedException()
-#
-#          return AuthenticationResult(**auth)
 
 
 @get("/", include_in_schema=False)
@@ -294,65 +239,3 @@ async def reboot() -> str:
 
 
 
-#  async def on_startup():
-#      await create_db_tables(Text, if_not_exists=True)
-#
-#      fortune = fortune_function()
-#      await Text.insert(Text(text=fortune))
-#
-#      pid_list = get_pids_in_port(port=8000)
-#      message = f"pids: {', '.join(pid_list)}\n\n{fortune}"
-#      ntfy_client(message=message, title="server started", priority="low")
-
-
-#  async def on_shutdown():
-#      texts = await Text.select()
-#      fortune = "\n\n".join([f"{text['id']}: {text['text']}"
-#                                   for text in texts])
-#
-#      pid_list = get_pids_in_port(port=8000)
-#      message = f"pids: {', '.join(pid_list)}\n\n{fortune}"
-#      ntfy_client(message=message, title="server stopping", priority="low")
-
-#  auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude="schema")
-
-#  route_handlers = [
-#          hello_world,
-#          display_dhammapada,
-#          text_to_img,
-#          get_cowsay,
-#          get_box,
-#          get_fortune,
-#          get_specific,
-#          get_index,
-#          github_webhook_notify,
-#          do_reboot,
-#          ]
-
-#  template_config = TemplateConfig(directory=Path("templates"),
-#          engine=JinjaTemplateEngine)
-
-# https://docs.litestar.dev/2/usage/openapi/schema_generation.html
-# https://docs.litestar.dev/2/reference/app.html
-
-#  app = Litestar(route_handlers=route_handlers,
-#                 middleware=[auth_mw],
-#                 logging_config=logging_config,
-#                 template_config=template_config,
-#                 openapi_config=OpenAPIConfig(
-#                     title='Yoke API',
-#                     version='0.0.1',
-#                     use_handler_docstrings=False,
-#                     render_plugins=[
-#                         RapidocRenderPlugin(),
-#                         RedocRenderPlugin(),
-#                         ScalarRenderPlugin(),
-#                         StoplightRenderPlugin(),
-#                         SwaggerRenderPlugin(),
-#                         YamlRenderPlugin()
-#                         ],
-#                     ),
-#                 on_startup=[on_startup],
-#                 on_shutdown=[on_shutdown],
-#                 pdb_on_exception=DEBUG
-#                 )
