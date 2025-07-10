@@ -29,4 +29,5 @@ class Text(Table, db=DB):
 #      password = Varchar()
 
 # https://docs.litestar.dev/2/usage/dto/1-abstract-dto.html#dto-data
+# https://docs.litestar.dev/latest/usage/databases/piccolo.html
 #  UserDTO = PiccoloDTO
