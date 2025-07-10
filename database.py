@@ -1,5 +1,7 @@
 import os
 
+from litestar.dto import DTOConfig
+
 from piccolo.engine.sqlite import SQLiteEngine
 from piccolo.table import Table, create_db_tables
 from piccolo.columns import Varchar
@@ -21,13 +23,17 @@ DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 class Text(Table, db=DB):
     text = Varchar()
 
-#  class Post(Table, db=DB):
-#      text = Varchar()
-#
-#  class User(Table, db=DB):
-#      username = Varchar()
-#      password = Varchar()
+class Post(Table, db=DB):
+    text = Varchar()
+
+class User(Table, db=DB):
+    username = Varchar()
+    password = Varchar()
 
 # https://docs.litestar.dev/2/usage/dto/1-abstract-dto.html#dto-data
 # https://docs.litestar.dev/latest/usage/databases/piccolo.html
 #  UserDTO = PiccoloDTO
+
+PostDTO = PiccoloDTO[Post]
+
+class UserDTO(PiccoloDTO[User]): ...
