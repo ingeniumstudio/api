@@ -18,3 +18,10 @@ DB = SQLiteEngine(path=SQLITE_FILE_NAME)
 
 class Text(Table, db=DB):
     text = Varchar()
+
+class Post(Table, db=DB):
+    text = Varchar()
+
+class User(Table, db=DB):
+    username = Varchar()
+    password = Varchar()
