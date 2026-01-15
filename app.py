@@ -37,6 +37,7 @@ from database import Text
 from routes import (
     hello_world,
     display_dhammapada,
+    dhammapada_qid,
     text_to_img,
     get_cowsay,
     get_box,
@@ -96,6 +97,7 @@ auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude="schema")
 route_handlers = [
         hello_world,
         display_dhammapada,
+        dhammapada_qid,
         text_to_img,
         get_cowsay,
         get_box,

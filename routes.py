@@ -53,6 +53,15 @@ async def hello_world() -> dict[str, str]:
     return {"hello": "world!"}
 
 
+@get("/dhammapada",
+     media_type=MediaType.TEXT,
+     summary="displays the quarter in die dhammapada",
+     description="From our bot",
+     **noauth,  #pyright: ignore
+     )
+async def dhammapada_qid() -> str:
+    return "hey"
+
 @get("/display-dhammapada",
      media_type=MediaType.TEXT,
      summary="displays dhammapada",
