@@ -1,3 +1,5 @@
+import os
+
 from litestar import MediaType
 from litestar import Response
 from litestar import Request
@@ -60,7 +62,11 @@ async def hello_world() -> dict[str, str]:
      **noauth,  #pyright: ignore
      )
 async def dhammapada_qid() -> str:
-    return "hey"
+    # https://github.com/ingeniumstudio/dhammapada-tweet-bot/blob/272a9ecec6c9b57754893040c417ce92e76465b0/dhammapada-tweet-bot.py#L13
+    dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.debug")
+    current_quarter_in_die_dhammapada = open(dhammapada_filename, "r").read()
+
+    return current_quarter_in_die_dhammapada
 
 @get("/display-dhammapada",
      media_type=MediaType.TEXT,
