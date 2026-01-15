@@ -61,10 +61,26 @@ async def hello_world() -> dict[str, str]:
      description="From our bot",
      **noauth,  #pyright: ignore
      )
-async def dhammapada_qid() -> str:
+async def dhammapada_qid(format: param_dhammapada_format = None
+                         ) -> str | Response:
+
     # https://github.com/ingeniumstudio/dhammapada-tweet-bot/blob/272a9ecec6c9b57754893040c417ce92e76465b0/dhammapada-tweet-bot.py#L13
     dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.debug")
     current_quarter_in_die_dhammapada = open(dhammapada_filename, "r").read()
+
+    if format == "png":
+        png_bytes = text_to_image(text=current_quarter_in_die_dhammapada,
+                                  padding=22,
+                                  foreground_color="orange",
+                                  background_color="blue",
+                                  font_size=16
+                                  )
+        return Response(
+            content=png_bytes,
+            media_type="image/png",
+            headers=Headers({"Content-Disposition":
+                             "inline; filename=image.png"})
+        )
 
     return current_quarter_in_die_dhammapada
 
