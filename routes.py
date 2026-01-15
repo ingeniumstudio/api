@@ -72,7 +72,7 @@ async def dhammapada_qid(format: param_dhammapada_format = None
         png_bytes = text_to_image(text=current_quarter_in_die_dhammapada,
                                   padding=22,
                                   foreground_color="orange",
-                                  background_color="blue",
+                                  background_color="#333366",
                                   font_size=16
                                   )
         return Response(
