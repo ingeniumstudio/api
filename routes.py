@@ -73,7 +73,7 @@ async def dhammapada_qid(format: param_dhammapada_format = None
                                   padding=22,
                                   foreground_color="orange",
                                   background_color="#333366",
-                                  font_size=14
+                                  font_size=12
                                   )
         return Response(
             content=png_bytes,
