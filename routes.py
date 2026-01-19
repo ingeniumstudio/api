@@ -72,8 +72,13 @@ async def dhammapada_qid(format: param_dhammapada_format = None
     file_modification_time = os.path.getmtime(dhammapada_filename)
     date_time = datetime.datetime.fromtimestamp(file_modification_time)
     formatted_date_time = date_time.strftime('%a %d %b %Y, %I:%M:%S%p')
+    time = f"[{formatted_date_time}]"
 
-    text = f"{current_quarter_in_die_dhammapada}\n\n[{formatted_date_time}]"
+    lines = current_quarter_in_die_dhammapada.split('\n')
+    biggest_line = max(map(len, lines))
+    offset = (biggest_line - len(time)) * ' '  # space
+
+    text = f"{current_quarter_in_die_dhammapada}\n\n{offset}{time}"
 
     if format == "png":
         png_bytes = text_to_image(text=text,
