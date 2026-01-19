@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from litestar import MediaType
@@ -68,8 +69,14 @@ async def dhammapada_qid(format: param_dhammapada_format = None
     dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.debug")
     current_quarter_in_die_dhammapada = open(dhammapada_filename, "r").read()
 
+    file_modification_time = os.path.getmtime(dhammapada_filename)
+    date_time = datetime.datetime.fromtimestamp(file_modification_time)
+    formatted_date_time = date_time.strftime('%a %d %b %Y, %I:%M:%S%p')
+
+    text = f"{current_quarter_in_die_dhammapada}\n\n[{formatted_date_time}]"
+
     if format == "png":
-        png_bytes = text_to_image(text=current_quarter_in_die_dhammapada,
+        png_bytes = text_to_image(text=text,
                                   padding=22,
                                   foreground_color="orange",
                                   background_color="#333366",
@@ -82,7 +89,7 @@ async def dhammapada_qid(format: param_dhammapada_format = None
                              "inline; filename=image.png"})
         )
 
-    return current_quarter_in_die_dhammapada
+    return text
 
 @get("/display-dhammapada",
      media_type=MediaType.TEXT,
