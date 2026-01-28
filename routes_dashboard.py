@@ -83,7 +83,8 @@ async def dhammapada_qid_dashboard() -> str:
 
     text = '\n'.join(text_lines)
 
-    html = (f"<div style=\"width: 100%; text-align: right;\">"
+    #  html = (f"<div style=\"width: 100%; text-align: right;\">"
+    html = (f"<div style=\"width: 100%; text-align: center;\">"
             f"<pre style=\"width: 100%;\">"
             f"{text}"
             f"</pre>"
