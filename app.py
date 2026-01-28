@@ -48,6 +48,10 @@ from routes import (
     reboot,
 )
 
+from routes_dashboard import (
+        dhammapada_qid_dashboard
+)
+
 import secret_config
 
 #  DEBUG = True
@@ -106,6 +110,8 @@ route_handlers = [
         get_index,
         github_webhook_notify,
         reboot,
+
+        dhammapada_qid_dashboard,
         ]
 
 template_config = TemplateConfig(directory=Path("templates"),
