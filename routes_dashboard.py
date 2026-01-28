@@ -84,7 +84,7 @@ async def dhammapada_qid_dashboard() -> str:
     #  text_lines.append(f"{time:>{line_size}}")
 
     #  text = '\n'.join(text_lines)
-    text = get_dhammapada_qid()
+    text = get_dhammapada_qid(show_time=True, space_padding=True)
 
     #  html = (f"<div style=\"width: 100%; text-align: right;\">"
     html = (f"<div style=\"width: 100%; text-align: center;\">"

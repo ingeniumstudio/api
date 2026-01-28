@@ -24,6 +24,8 @@ from functions import (
     verify_github_webhook_signature,
     process_github_webhook,
     do_reboot,
+
+    get_dhammapada_qid,
 )
 
 from aux.params import (
@@ -66,19 +68,20 @@ async def dhammapada_qid(format: param_dhammapada_format = None
                          ) -> str | Response:
 
     # https://github.com/ingeniumstudio/dhammapada-tweet-bot/blob/272a9ecec6c9b57754893040c417ce92e76465b0/dhammapada-tweet-bot.py#L13
-    dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
-    current_quarter_in_die_dhammapada = open(dhammapada_filename, "r").read()
+    #  dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
+    #  current_quarter_in_die_dhammapada = open(dhammapada_filename, "r").read()
 
-    file_modification_time = os.path.getmtime(dhammapada_filename)
-    date_time = datetime.datetime.fromtimestamp(file_modification_time)
-    formatted_date_time = date_time.strftime('%a %d %b %Y, %I:%M:%S%p GMT-3:00')
-    time = f"[{formatted_date_time}]"
+    #  file_modification_time = os.path.getmtime(dhammapada_filename)
+    #  date_time = datetime.datetime.fromtimestamp(file_modification_time)
+    #  formatted_date_time = date_time.strftime('%a %d %b %Y, %I:%M:%S%p GMT-3:00')
+    #  time = f"[{formatted_date_time}]"
 
-    lines = current_quarter_in_die_dhammapada.split('\n')
-    biggest_line = max(map(len, lines))
-    offset = (biggest_line - len(time)) * ' '  # space
+    #  lines = current_quarter_in_die_dhammapada.split('\n')
+    #  biggest_line = max(map(len, lines))
+    #  offset = (biggest_line - len(time)) * ' '  # space
 
-    text = f"{current_quarter_in_die_dhammapada}\n\n{offset}{time}"
+    #  text = f"{current_quarter_in_die_dhammapada}\n\n{offset}{time}"
+    text = get_dhammapada_qid(show_time=True, space_padding=False)
 
     if format == "png":
         png_bytes = text_to_image(text=text,
