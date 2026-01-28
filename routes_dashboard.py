@@ -96,7 +96,7 @@ async def dhammapada_qid_dashboard() -> str | Response:
     #      )
 
     return Response(
-        content=text,
+        content=html,
         media_type="text/html",
         headers=Headers({
             "Widget-Title": "Buddha saying in the Dhammapada",
