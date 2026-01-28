@@ -2,11 +2,11 @@ import datetime
 import os
 
 from litestar import MediaType
-#  from litestar import Response
+from litestar import Response
 #  from litestar import Request
 from litestar import get
 #  from litestar import post
-#  from litestar.datastructures import Headers
+from litestar.datastructures import Headers
 #
 #  from litestar.exceptions import HTTPException
 #  from litestar.status_codes import HTTP_403_FORBIDDEN
@@ -66,24 +66,9 @@ noauth = {"exclude_from_auth": True}
      **noauth,  #pyright: ignore
      )
 #  async def dhammapada_qid_extension(format: param_dhammapada_format = None) -> str:
-async def dhammapada_qid_dashboard() -> str:
+async def dhammapada_qid_dashboard() -> str | Response:
     # qid = quarter in die
 
-    #  dhammapada_qid_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
-    #  qid_dhammapada = open(dhammapada_qid_filename, "r").read()
-
-    #  file_modification_time = os.path.getmtime(dhammapada_qid_filename)
-    #  date_time = datetime.datetime.fromtimestamp(file_modification_time)
-    #  formatted_datetime = date_time.strftime('%a %d %b %Y, %I:%M:%S%p GMT-3:00')
-    #  time = f"[{formatted_datetime}]"
-
-    #  lines = qid_dhammapada.split('\n')
-    #  line_size = max(map(len, lines))  # size of the biggest line
-    #  text_lines = [f"{line:<{line_size}}" for line in lines]
-    #  text_lines.append('')
-    #  text_lines.append(f"{time:>{line_size}}")
-
-    #  text = '\n'.join(text_lines)
     text = get_dhammapada_qid(show_time=True, space_padding=True)
 
     #  html = (f"<div style=\"width: 100%; text-align: right;\">"
@@ -109,6 +94,17 @@ async def dhammapada_qid_dashboard() -> str:
     #          headers=Headers({"Content-Disposition":
     #                           "inline; filename=image.png"})
     #      )
+
+    return Response(
+        content=text,
+        media_type="text/html",
+        headers=Headers({
+            "Widget-Title": "Buddha saying in the Dhammapada",
+            "Widget-Title-URL": "https://kassius.org",
+            "Widget-Content-Frameless": "true",
+            "Widget-Content-Type": "html",
+        })
+    )
 
     return html
 
