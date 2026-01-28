@@ -77,9 +77,9 @@ async def dhammapada_qid_dashboard() -> str:
     lines = qid_dhammapada.split('\n')
     line_size = max(map(len, lines))  # size of the biggest line
     #  offset = (biggest_line - len(time)) * ' '  # space
-    text_lines = [f"{line:>line_size}" for line in lines]
+    text_lines = [f"{line:>{line_size}}" for line in lines]
     text_lines.append('')
-    text_lines.append(f"{time:>line_size}")
+    text_lines.append(f"{time:>{line_size}}")
 
     text = '\n'.join(text_lines)
 
