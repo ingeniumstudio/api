@@ -84,10 +84,10 @@ async def dhammapada_qid_dashboard() -> str:
     text = '\n'.join(text_lines)
 
     html = (f"<div style=\"width: 100%; text-align: right;\">"
-            "<pre style=\"width: 100%;\">"
-            "{text}"
-            "</pre>"
-            "</div>")
+            f"<pre style=\"width: 100%;\">"
+            f"{text}"
+            f"</pre>"
+            f"</div>")
 
     #  text = f"{current_qid_dhammapada}\n\n{offset}{time}"
     #  text = f"{current_qid_dhammapada}\n\n{offset}{time}"
