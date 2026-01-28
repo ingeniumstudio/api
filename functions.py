@@ -1,3 +1,4 @@
+import datetime
 import hmac
 import hashlib
 import json
@@ -47,6 +48,49 @@ def get_dhammapada(number: int | None = None):
     offset = ' ' * offset_len
     return f"{verse}\n\n{offset}{signature}"
     #  print(verse, signature, sep="\n\n")
+
+
+def get_dhammapada_qid(show_time=True, space_padding=False) -> str:
+
+    qid_dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
+    qid_dhammapada = open(qid_dhammapada_filename, "r").read()
+
+    file_modification_time = os.path.getmtime(qid_dhammapada_filename)
+    date_time = datetime.datetime.fromtimestamp(file_modification_time)
+    formatted_date_time = date_time.strftime("%a %d %b %Y, %I:%M:%S%p GMT-3:00")
+    time = f"[{formatted_date_time}]"
+
+    #  lines = qid_dhammapada.split('\n')
+    #  biggest_line = max(map(len, lines))
+    #  offset = (biggest_line - len(time)) * ' '  # space
+    #
+    #  text = f"{qid_dhammapada}\n\n{offset}{time}"
+
+    lines = qid_dhammapada.split('\n')
+    line_size = max(map(len, lines))  # size of the biggest line
+    text_lines = [f"{line:<{line_size if space_padding else 0}}"
+                  for line in lines]
+
+    if show_time:
+        text_lines.append('')
+        text_lines.append(f"{time:>{line_size}}")
+
+    text = '\n'.join(text_lines)
+    #  if format == "png":
+    #      png_bytes = text_to_image(text=text,
+    #                                padding=22,
+    #                                foreground_color="orange",
+    #                                background_color="#333366",
+    #                                font_size=14
+    #                                )
+        #  return Response(
+        #      content=png_bytes,
+        #      media_type="image/png",
+        #      headers=Headers({"Content-Disposition":
+        #                       "inline; filename=image.png"})
+        #  )
+
+    return text
 
 
 def text_to_image(text: str,

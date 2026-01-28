@@ -25,6 +25,9 @@ from litestar import get
 #      process_github_webhook,
 #      do_reboot,
 #  )
+from functions import (
+        get_dhammapada_qid
+)
 
 #  from aux.params import (
 #      param_optional_text,
@@ -66,22 +69,22 @@ noauth = {"exclude_from_auth": True}
 async def dhammapada_qid_dashboard() -> str:
     # qid = quarter in die
 
-    dhammapada_qid_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
-    qid_dhammapada = open(dhammapada_qid_filename, "r").read()
+    #  dhammapada_qid_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
+    #  qid_dhammapada = open(dhammapada_qid_filename, "r").read()
 
-    file_modification_time = os.path.getmtime(dhammapada_qid_filename)
-    date_time = datetime.datetime.fromtimestamp(file_modification_time)
-    formatted_datetime = date_time.strftime('%a %d %b %Y, %I:%M:%S%p GMT-3:00')
-    time = f"[{formatted_datetime}]"
+    #  file_modification_time = os.path.getmtime(dhammapada_qid_filename)
+    #  date_time = datetime.datetime.fromtimestamp(file_modification_time)
+    #  formatted_datetime = date_time.strftime('%a %d %b %Y, %I:%M:%S%p GMT-3:00')
+    #  time = f"[{formatted_datetime}]"
 
-    lines = qid_dhammapada.split('\n')
-    line_size = max(map(len, lines))  # size of the biggest line
-    #  offset = (biggest_line - len(time)) * ' '  # space
-    text_lines = [f"{line:<{line_size}}" for line in lines]
-    text_lines.append('')
-    text_lines.append(f"{time:>{line_size}}")
+    #  lines = qid_dhammapada.split('\n')
+    #  line_size = max(map(len, lines))  # size of the biggest line
+    #  text_lines = [f"{line:<{line_size}}" for line in lines]
+    #  text_lines.append('')
+    #  text_lines.append(f"{time:>{line_size}}")
 
-    text = '\n'.join(text_lines)
+    #  text = '\n'.join(text_lines)
+    text = get_dhammapada_qid()
 
     #  html = (f"<div style=\"width: 100%; text-align: right;\">"
     html = (f"<div style=\"width: 100%; text-align: center;\">"
