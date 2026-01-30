@@ -250,11 +250,11 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
                                                       .GITHUB_WEBHOOK_SECRET,
                                        signature=signature_header):
 
-        message = github_webhook_info_message(data=data)
 
         ntfy_client(message=json.dumps(data), title="data dict",
                     priority="default")
 
+        message = github_webhook_info_message(data=data)
         ntfy_client(message=message, title="from /webhook-github",
                     priority="default")
 
