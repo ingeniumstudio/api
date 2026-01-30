@@ -170,20 +170,13 @@ def ntfy_client(message, title, priority):
 
     args = ["/home/u07/.venv/bin/ntfy-client",
             "pub",
-            "--server-hostname",
-            secret_config.NTFY_SERVER_HOSTNAME,
-            "--topic",
-            secret_config.NTFY_TOPIC,
-            "--token",
-            secret_config.NTFY_TOKEN,
-            "--message",
-            message,
-            "--title",
-            title,
-            "--priority",
-            priority,
-            "--icon",
-            secret_config.NTFY_ICON,
+            "--server-hostname", secret_config.NTFY_SERVER_HOSTNAME,
+            "--topic", secret_config.NTFY_TOPIC,
+            "--token", secret_config.NTFY_TOKEN,
+            "--message", message,
+            "--title", title,
+            "--priority", priority,
+            "--icon", secret_config.NTFY_ICON,
             ]
     #  args = ["ntfy-cli.py", "--message", data]
     subprocess.run(args)
