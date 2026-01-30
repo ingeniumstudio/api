@@ -10,8 +10,10 @@ from litestar.datastructures import Headers
 
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_403_FORBIDDEN
+from litestar.status_codes import HTTP_302_FOUND  # temporary redirection
 
 from litestar.response import Template
+from litestar.response import Redirect
 
 from functions import (
     get_dhammapada,
@@ -52,17 +54,22 @@ DEBUG = False
 noauth = {"exclude_from_auth": True}
 
 
-@get("/", include_in_schema=False)
-async def hello_world() -> dict[str, str]:
-    """Handler function that returns a greeting dictionary."""
-    return {"hello": "world!"}
+@get("/",
+     #  include_in_schema=False,
+     status_code=HTTP_302_FOUND,
+     **noauth,  # pyright: ignore
+     )
+async def root_path() -> Redirect:
+    """Redirects root to Swagger"""
+    return Redirect(path="/schema/swagger")
+    #  return {"hello": "world!"}
 
 
 @get("/dhammapada",
      media_type=MediaType.TEXT,
      summary="displays the quarter in die dhammapada",
      description="From our bot",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def dhammapada_qid(format: param_dhammapada_format = None
                          ) -> str | Response:
@@ -90,7 +97,7 @@ async def dhammapada_qid(format: param_dhammapada_format = None
      media_type=MediaType.TEXT,
      summary="displays dhammapada",
      description="Display a random verse from the Dhammapada if `number` is not specified, verse `number` otherwise",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def display_dhammapada(number: param_dhammapada_number = None,
                              format: param_dhammapada_format = None,
@@ -129,7 +136,7 @@ async def display_dhammapada(number: param_dhammapada_number = None,
 @get("/text-to-image",
      summary="image from text",
      description="Generates an image from `text`.",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def text_to_img(
                       text: param_optional_text,
@@ -170,7 +177,7 @@ async def text_to_img(
      media_type=MediaType.TEXT,
      summary="cowsay text",
      description="Cowsays `text`",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def get_cowsay(text: param_required_text) -> str:
     cowsaying = cowsay_function(text=text)
@@ -182,7 +189,7 @@ async def get_cowsay(text: param_required_text) -> str:
      media_type=MediaType.TEXT,
      summary="text inside box",
      description="Displays `text` inside box",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def get_box(text: param_required_text) -> str:
     text_box = box_function(text=text)
@@ -194,7 +201,7 @@ async def get_box(text: param_required_text) -> str:
      media_type=MediaType.TEXT,
      summary="displays fortune",
      description="Displays a random fortune",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def get_fortune() -> str:
     fortune_text = fortune_function()
@@ -206,7 +213,7 @@ async def get_fortune() -> str:
      media_type=MediaType.TEXT,
      summary="displays specific fortune",
      description="Displays a chosen fortune",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def get_specific() -> str:
     texts = await Text.select()
@@ -220,7 +227,7 @@ async def get_specific() -> str:
      media_type=MediaType.HTML,
      summary="template",
      description="Testing templates",
-     **noauth,  #pyright: ignore
+     **noauth,  # pyright: ignore
      )
 async def get_index(text: param_required_text) -> Template:
     context = {"text": text}
@@ -231,7 +238,7 @@ async def get_index(text: param_required_text) -> Template:
 
 @post("/webhook-github",
       include_in_schema=False,
-      **noauth,  #pyright: ignore
+      **noauth,  # pyright: ignore
       )
 async def github_webhook_notify(request: Request, data: dict) -> str:
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")

@@ -35,7 +35,7 @@ from database import create_db_tables
 from database import Text
 
 from routes import (
-    hello_world,
+    root_path,
     display_dhammapada,
     dhammapada_qid,
     text_to_img,
@@ -99,7 +99,8 @@ async def on_shutdown():
 auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude="schema")
 
 route_handlers = [
-        hello_world,
+        #  hello_world,
+        root_path,
         display_dhammapada,
         dhammapada_qid,
         text_to_img,
