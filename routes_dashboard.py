@@ -60,11 +60,12 @@ noauth = {"exclude_from_auth": True}
 
 
 @get("/dashboard/dhammapada",
-     media_type=MediaType.HTML,
-     summary="dashboard extension that displays the quarter in die dhammapada",
-     description="From our bot",
-     **noauth,  #pyright: ignore
-     )
+    include_in_schema=False,
+    media_type=MediaType.HTML,
+    summary="dashboard extension that displays the quarter in die dhammapada",
+    description="From our bot",
+    **noauth,  #pyright: ignore
+)
 #  async def dhammapada_qid_extension(format: param_dhammapada_format = None) -> str:
 async def dhammapada_qid_dashboard() -> str | Response:
     # qid = quarter in die
