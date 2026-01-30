@@ -55,14 +55,14 @@ noauth = {"exclude_from_auth": True}
 
 
 @get("/",
-     #  include_in_schema=False,
+     include_in_schema=False,
      status_code=HTTP_302_FOUND,
      **noauth,  # pyright: ignore
      )
 async def root_path() -> Redirect:
     """Redirects root to Swagger"""
+
     return Redirect(path="/schema/swagger")
-    #  return {"hello": "world!"}
 
 
 @get("/dhammapada",
@@ -272,8 +272,7 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
                 status_code=HTTP_403_FORBIDDEN)
 
 
-@get("/reboot"
-     )
+@get("/reboot")
 async def reboot() -> str:
     do_reboot()
 

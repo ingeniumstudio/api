@@ -99,7 +99,6 @@ async def on_shutdown():
 auth_mw = DefineMiddleware(YokeAuthMiddleware, exclude="schema")
 
 route_handlers = [
-        #  hello_world,
         root_path,
         display_dhammapada,
         dhammapada_qid,
