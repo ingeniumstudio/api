@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 
 from litestar import MediaType
@@ -251,7 +252,7 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 
         message = github_webhook_info_message(data=data)
 
-        ntfy_client(message=str(data), title="data dict",
+        ntfy_client(message=json.dumps(data), title="data dict",
                     priority="default")
 
         ntfy_client(message=message, title="from /webhook-github",
