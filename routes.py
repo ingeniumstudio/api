@@ -24,7 +24,7 @@ from functions import (
     fortune as fortune_function,
     git_pull_repo,
     verify_github_webhook_signature,
-    process_github_webhook,
+    github_webhook_info_message,
     do_reboot,
 
     get_dhammapada_qid,
@@ -249,8 +249,10 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
                                                       .GITHUB_WEBHOOK_SECRET,
                                        signature=signature_header):
 
-        data_dict = data
-        message = process_github_webhook(data=data_dict)
+        message = github_webhook_info_message(data=data)
+
+        ntfy_client(message=str(data), title="data dict",
+                    priority="default")
 
         ntfy_client(message=message, title="from /webhook-github",
                     priority="default")

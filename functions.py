@@ -123,7 +123,8 @@ def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
     return hmac.compare_digest(computed_hash, provided_hash)
 
 
-def process_github_webhook(data):
+#  def process_github_webhook(data):
+def github_webhook_info_message(data):
 
     #  file_separator = ", "
     file_separator = "\n"
