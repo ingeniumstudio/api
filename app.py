@@ -44,7 +44,7 @@ from routes import (
     get_fortune,
     get_specific,
     get_index,
-    github_webhook_notify,
+    github_webhook,
     reboot,
 )
 
@@ -108,7 +108,7 @@ route_handlers = [
         get_fortune,
         get_specific,
         get_index,
-        github_webhook_notify,
+        github_webhook,
         reboot,
 
         dhammapada_qid_dashboard,
