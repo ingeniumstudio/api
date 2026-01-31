@@ -296,7 +296,7 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
     if not repository_full_name in WEBHOOK_DATA:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
     else:
-        repository_name = repository_full_name
+        #  repository_name = repository_full_name
         repository_local_directory = \
                 WEBHOOK_DATA[repository_full_name]["local_directory"]
         repository_github_token = \
