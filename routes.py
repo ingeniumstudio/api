@@ -243,92 +243,92 @@ async def get_index(text: param_required_text) -> Template:
     return index
 
 
-@post("/webhook-github",  # this one is being used
+#  @post("/webhook-github",  # this one is being used
+#        include_in_schema=False,
+#        **noauth,  # pyright: ignore
+#        )
+#  async def github_webhook_notify(request: Request, data: dict) -> str:
+#      signature_header = request.headers.getone("X-Hub-Signature-256", "=")
+#      data_bytes = await request.body()
+#
+#      if verify_github_webhook_signature(data_bytes=data_bytes,
+#                                         webhook_secret=secret_config\
+#                                                        .GITHUB_WEBHOOK_SECRET,
+#                                         signature=signature_header):
+#
+#
+#          ntfy_client(message=json.dumps(data), title="data dict",
+#                      priority="default")
+#
+#          message = github_webhook_info_message(data=data)
+#          ntfy_client(message=message, title="from /webhook-github",
+#                      priority="default")
+#
+#          git_message = git_pull_repo(data)
+#          if git_message:
+#              ntfy_client(message=git_message, title="git pull 'repo'",
+#                          priority="default")
+#
+#          return message
+#
+#      else:
+#          message = "error checking"
+#
+#          ntfy_client(message=message, title="from /webhook-github",
+#                      priority="high")
+#
+#          raise HTTPException(detail="Invalid signature",
+#                  status_code=HTTP_403_FORBIDDEN)
+
+
+#  @post("/github-webhook",
+@post("/webhook-github",
       include_in_schema=False,
       **noauth,  # pyright: ignore
       )
-async def github_webhook_notify(request: Request, data: dict) -> str:
-    signature_header = request.headers.getone("X-Hub-Signature-256", "=")
-    data_bytes = await request.body()
-
-    if verify_github_webhook_signature(data_bytes=data_bytes,
-                                       webhook_secret=secret_config\
-                                                      .GITHUB_WEBHOOK_SECRET,
-                                       signature=signature_header):
-
-
-        ntfy_client(message=json.dumps(data), title="data dict",
-                    priority="default")
-
-        message = github_webhook_info_message(data=data)
-        ntfy_client(message=message, title="from /webhook-github",
-                    priority="default")
-
-        git_message = git_pull_repo(data)
-        if git_message:
-            ntfy_client(message=git_message, title="git pull 'repo'",
-                        priority="default")
-
-        return message
-
-    else:
-        message = "error checking"
-
-        ntfy_client(message=message, title="from /webhook-github",
-                    priority="high")
-
-        raise HTTPException(detail="Invalid signature",
-                status_code=HTTP_403_FORBIDDEN)
-
-
-@post("/github-webhook",
-      include_in_schema=False,
-      **noauth,  # pyright: ignore
-      )
-#  async def github_webhook(request: Request, data: dict) -> str:
 async def github_webhook(request: Request, data: dict) -> NoneType:
     # FIXME: later, change the endpoint to /webhook-github
 
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")
     data_bytes = await request.body()
-    github_webhook_secret = secret_config.GITHUB_WEBHOOK_SECRET
 
     repository_full_name = data["repository"]["full_name"]
-
-    #  if not repository_full_name in WEBHOOK_DATA:
-    #      raise HTTPException(detail="ERROR: Invalid signature",
-    #              status_code=HTTP_403_FORBIDDEN)
 
     if not repository_full_name in WEBHOOK_DATA:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
     else:
-        repo_name = repository_full_name
-        repo_local_directory = \
+        repository_name = repository_full_name
+        repository_local_directory = \
                 WEBHOOK_DATA[repository_full_name]["local_directory"]
-        repo_github_token = WEBHOOK_DATA[repository_full_name]["github_token"]
+        repository_github_token = \
+                WEBHOOK_DATA[repository_full_name]["github_token"]
+
         commit_message = data["head_commit"]["message"]
 
+        user = secret_config.USER
+
     if not verify_github_signature(data_bytes=data_bytes,
-                                   webhook_secret=repo_github_token,
-                                   #  webhook_secret=github_webhook_secret,
+                                   webhook_secret=repository_github_token,
                                    signature=signature_header):
 
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
 
     # repository is locally set
     # and signature is valid; continuing
-    repository_full_name = data["repository"]["full_name"]
-    commit_message = data["head_commit"]["message"]
-    #  if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
-    #          and data["head_commit"]["message"] == "commit":
-    #  if repository_full_name in WEBHOOK_DATA
 
-    ntfy_client(message=json.dumps(data), title="data dict",
-                    priority="default")
+    git_output = git_pull_repository(
+            repository_local_directory=repository_local_directory,
+            user=user,
+            commit_message=commit_message,
+            data=data)
 
-    git_message = git_pull_repository(data)
-    if git_message:
-        ntfy_client(message=git_message, title="git pull 'repo'",
+    message = github_webhook_info_message(data=data)
+
+    notification_lines = [git_output, "", "--- --- ---", "", "", message]
+    notification = "\n".join(notification_lines)
+
+    if notification:
+        ntfy_client(message=notification, title="git pull 'repo'",
                         priority="default")
 
     return None

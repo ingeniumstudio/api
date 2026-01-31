@@ -178,20 +178,37 @@ def git_pull_repo(data: dict):
         return None
 
 
-def git_pull_repository(data: dict):
-    if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
-            and data["head_commit"]["message"] == "commit":
+git_message = """\
+stdout:
 
-        #  args = ["/usr/bin/git", "pull"]
-        args = ["sudo", "-u", secret_config.USER, "/usr/bin/git", "pull"]
-        git_process = subprocess.run(args, capture_output=True, text=True)
+{git_process.stdout}
 
-        git_message = f"{git_process.stdout}\n---\n{git_process.stderr}"
+---
+srderr:
 
-        return git_message
+{git_process.stderr}
+"""
 
-    else:
-        return None
+#  def git_pull_repository(data: dict):
+def git_pull_repository(repository_local_directory,
+                        user,
+                        commit_message,
+                        data: dict):
+
+    if not commit_message == "commit":
+        return 0
+
+    args = [
+            "sudo", "-u", user,
+            "/usr/bin/git",
+            "-C", repository_local_directory,
+            "pull"
+            ]
+    git_process = subprocess.run(args, capture_output=True, text=True)
+
+    message = git_message.format(git_process=git_process)
+
+    return message
 
 
 def ntfy_client(message, title, priority):
