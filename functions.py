@@ -113,14 +113,14 @@ def text_to_image(text: str,
     return png_bytes
 
 
-def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
-    algo, provided_hash = signature.split('=')
-
-    computed_hash = hmac.new(key=webhook_secret.encode("utf-8"),
-                             msg=data_bytes,
-                             digestmod=hashlib.sha256).hexdigest()
-
-    return hmac.compare_digest(computed_hash, provided_hash)
+#  def verify_github_webhook_signature(data_bytes, webhook_secret, signature):
+#      algo, provided_hash = signature.split('=')
+#
+#      computed_hash = hmac.new(key=webhook_secret.encode("utf-8"),
+#                               msg=data_bytes,
+#                               digestmod=hashlib.sha256).hexdigest()
+#
+#      return hmac.compare_digest(computed_hash, provided_hash)
 
 
 #new
@@ -162,20 +162,20 @@ Commit: {data["head_commit"]["url"]}
     return message
 
 
-def git_pull_repo(data: dict):
-    if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
-            and data["head_commit"]["message"] == "commit":
-
-        #  args = ["/usr/bin/git", "pull"]
-        args = ["sudo", "-u", secret_config.USER, "/usr/bin/git", "pull"]
-        git_process = subprocess.run(args, capture_output=True, text=True)
-
-        git_message = f"{git_process.stdout}\n---\n{git_process.stderr}"
-
-        return git_message
-
-    else:
-        return None
+#  def git_pull_repo(data: dict):
+#      if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
+#              and data["head_commit"]["message"] == "commit":
+#
+#          #  args = ["/usr/bin/git", "pull"]
+#          args = ["sudo", "-u", secret_config.USER, "/usr/bin/git", "pull"]
+#          git_process = subprocess.run(args, capture_output=True, text=True)
+#
+#          git_message = f"{git_process.stdout}\n---\n{git_process.stderr}"
+#
+#          return git_message
+#
+#      else:
+#          return None
 
 
 git_message = """\
