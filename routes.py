@@ -326,9 +326,9 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
     notification_lines = [git_output, "", "--- --- ---", "", "", message]
     notification = "\n".join(notification_lines)
 
-    if notification:
-        ntfy_client(message=notification, title="git pull 'repo'",
-                        priority="default")
+    #  if notification:
+    ntfy_client(message=notification, title="git pull 'repo'",
+                    priority="default")
 
     return None
 
