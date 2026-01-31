@@ -296,7 +296,7 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
     if not repository_full_name in WEBHOOK_DATA:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
     else:
-        #  repository_name = repository_full_name
+        repository_name = repository_full_name
         repository_local_directory = \
                 WEBHOOK_DATA[repository_full_name]["local_directory"]
         repository_github_token = \
@@ -312,7 +312,8 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
 
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
 
-    ntfy_client(message="Webhook kicked in...")
+    ntfy_client(message="Webhook kicked in...",
+                title=f"GitHub: {repository_name}")
 
     # repository is locally set
     # and signature is valid; continuing
@@ -328,9 +329,9 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
     notification_lines = [git_output, "", "--- --- ---", "", "", message]
     notification = "\n".join(notification_lines)
 
-    #  if notification:
-    ntfy_client(message=notification, title="git pull 'repo'",
-                    priority="default")
+    if notification:
+        ntfy_client(message=notification,
+                    title=f"git pull '{repository_name}'")
 
     return None
 
