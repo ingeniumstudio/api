@@ -326,7 +326,8 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
 
     message = github_webhook_info_message(data=data)
 
-    notification_lines = [git_output, "", "--- --- ---", "", "", message]
+    #  notification_lines = [git_output, "", "--- --- ---", "", "", message]
+    notification_lines = [git_output, "--- --- ---", message]
     notification = "\n".join(notification_lines)
 
     if notification:
