@@ -211,7 +211,7 @@ def git_pull_repository(repository_local_directory,
     return message
 
 
-def ntfy_client(message, title, priority):
+def ntfy_client(message, title="", priority="default"):
 
     args = ["/home/u07/.venv/bin/ntfy-client",
             "pub",
