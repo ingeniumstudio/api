@@ -125,7 +125,7 @@ def text_to_image(text: str,
 
 #new
 def verify_github_signature(data_bytes, webhook_secret, signature):
-    _algo, provided_hash = signature.split('=')
+    __algo, provided_hash = signature.split('=')
     provided_hash = signature.split('=')
 
     computed_hash = hmac.new(key=webhook_secret.encode("utf-8"),
