@@ -312,7 +312,7 @@ async def github_webhook(request: Request, data: dict) -> NoneType:
 
         raise HTTPException(status_code=HTTP_403_FORBIDDEN)
 
-    ntfy_client(message="Webhook kicked in")
+    ntfy_client(message="Webhook kicked in...")
 
     # repository is locally set
     # and signature is valid; continuing
