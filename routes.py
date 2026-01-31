@@ -8,11 +8,12 @@ from litestar import Response
 from litestar import Request
 from litestar import get
 from litestar import post
-from litestar.datastructures import Headers
+from litestar.datastructures import Headers, secret_values
 
 from litestar.exceptions import HTTPException
-from litestar.status_codes import HTTP_403_FORBIDDEN
 from litestar.status_codes import HTTP_302_FOUND  # temporary redirection
+from litestar.status_codes import HTTP_400_BAD_REQUEST
+from litestar.status_codes import HTTP_403_FORBIDDEN
 
 from litestar.response import Template
 from litestar.response import Redirect
@@ -25,7 +26,9 @@ from functions import (
     cowsay as cowsay_function,
     fortune as fortune_function,
     git_pull_repo,
+    git_pull_repository,
     verify_github_webhook_signature,
+    verify_github_signature,
     github_webhook_info_message,
     do_reboot,
 
@@ -49,6 +52,8 @@ from aux.params import (
 from database import Text
 
 import secret_config
+from secret_webhooks import WEBHOOK_DATA
+
 
 #  DEBUG = True
 DEBUG = False
@@ -283,37 +288,50 @@ async def github_webhook_notify(request: Request, data: dict) -> str:
 #  async def github_webhook(request: Request, data: dict) -> str:
 async def github_webhook(request: Request, data: dict) -> NoneType:
     # FIXME: later, change the endpoint to /webhook-github
+
     signature_header = request.headers.getone("X-Hub-Signature-256", "=")
     data_bytes = await request.body()
+    github_webhook_secret = secret_config.GITHUB_WEBHOOK_SECRET
 
-    if verify_github_webhook_signature(data_bytes=data_bytes,
-                                       webhook_secret=secret_config\
-                                                      .GITHUB_WEBHOOK_SECRET,
-                                       signature=signature_header):
+    repository_full_name = data["repository"]["full_name"]
 
+    #  if not repository_full_name in WEBHOOK_DATA:
+    #      raise HTTPException(detail="ERROR: Invalid signature",
+    #              status_code=HTTP_403_FORBIDDEN)
 
-        ntfy_client(message=json.dumps(data), title="data dict",
+    if not repository_full_name in WEBHOOK_DATA:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN)
+    else:
+        repo_name = repository_full_name
+        repo_local_directory = \
+                WEBHOOK_DATA[repository_full_name]["local_directory"]
+        repo_github_token = WEBHOOK_DATA[repository_full_name]["github_token"]
+        commit_message = data["head_commit"]["message"]
+
+    if not verify_github_signature(data_bytes=data_bytes,
+                                   webhook_secret=repo_github_token,
+                                   #  webhook_secret=github_webhook_secret,
+                                   signature=signature_header):
+
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN)
+
+    # repository is locally set
+    # and signature is valid; continuing
+    repository_full_name = data["repository"]["full_name"]
+    commit_message = data["head_commit"]["message"]
+    #  if data["repository"]["full_name"] == secret_config.REPOSITORY_FULL_NAME\
+    #          and data["head_commit"]["message"] == "commit":
+    #  if repository_full_name in WEBHOOK_DATA
+
+    ntfy_client(message=json.dumps(data), title="data dict",
                     priority="default")
 
-        #  message = github_webhook_info_message(data=data)
-        #  ntfy_client(message=message, title="from /github-webhook",
-        #              priority="default")
-
-        git_message = git_pull_repo(data)
-        if git_message:
-            ntfy_client(message=git_message, title="git pull 'repo'",
+    git_message = git_pull_repository(data)
+    if git_message:
+        ntfy_client(message=git_message, title="git pull 'repo'",
                         priority="default")
 
-        #  return message
-
-    else:
-        message = "error checking"
-
-        ntfy_client(message=message, title="from /github-webhook",
-                    priority="high")
-
-        raise HTTPException(detail="Invalid signature",
-                status_code=HTTP_403_FORBIDDEN)
+    return None
 
 
 @get("/reboot")
