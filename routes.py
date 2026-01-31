@@ -281,7 +281,6 @@ async def get_index(text: param_required_text) -> Template:
 #                  status_code=HTTP_403_FORBIDDEN)
 
 
-#  @post("/github-webhook",
 @post("/webhook-github",
       include_in_schema=False,
       **noauth,  # pyright: ignore
