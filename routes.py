@@ -39,6 +39,7 @@ from aux.params import (
     param_optional_text,
     param_required_text,
     param_padding,
+    param_space_padding,
     param_foreground_color,
     param_background_color,
     param_font_size,
@@ -78,10 +79,11 @@ async def root_path() -> Redirect:
      description="From our bot",
      **noauth,  # pyright: ignore
      )
-async def dhammapada_qid(format: param_dhammapada_format = None
+async def dhammapada_qid(format: param_dhammapada_format = None,
+                         space_padding: param_space_padding = False,
                          ) -> str | Response:
 
-    text = get_dhammapada_qid(show_time=True, space_padding=False)
+    text = get_dhammapada_qid(show_time=True, space_padding=space_padding)
 
     if format == "png":
         png_bytes = text_to_image(text=text,

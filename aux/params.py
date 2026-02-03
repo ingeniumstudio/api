@@ -25,6 +25,11 @@ param_padding = Annotated[int,
                                   le=1024
                               )]
 
+param_space_padding = Annotated[bool,
+                          Parameter(
+                              description="Makes all lines the same lenght by adding spaces after text",
+                          )]
+
 #  param_foreground_color = Annotated[str | None,
 param_foreground_color = Annotated[str,
                                        Parameter(
