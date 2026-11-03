@@ -52,7 +52,7 @@ def get_dhammapada(number: int | None = None):
 
 def get_dhammapada_qid(show_time=True, space_padding=False) -> str:
 
-    qid_dhammapada_filename = os.path.expanduser("~/.dhammapada-tweet-bot.txt")
+    qid_dhammapada_filename = os.path.expanduser("~/.dhammapada-bot.txt")
     qid_dhammapada = open(qid_dhammapada_filename, "r").read()
 
     file_modification_time = os.path.getmtime(qid_dhammapada_filename)
