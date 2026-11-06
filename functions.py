@@ -61,13 +61,15 @@ def get_dhammapada_qid(show_time=True, space_padding=False) -> str:
     time = f"[{formatted_date_time}]"
 
     lines = qid_dhammapada.split('\n')
-    line_size = max(map(len, lines))  # size of the biggest line
-    text_lines = [f"{line:<{line_size if space_padding else 0}}"
-                  for line in lines]
+    #  line_size = max(map(len, lines))  # size of the biggest line
+    #  text_lines = [f"{line:<{line_size if space_padding else 0}}"
+    #                for line in lines]
+    text_lines = [line for line in lines]
 
     if show_time:
         text_lines.append('')
-        text_lines.append(f"{time:>{line_size}}")
+        #  text_lines.append(f"{time:>{line_size}}")
+        text_lines.append(time)
 
     text = '\n'.join(text_lines)
 
